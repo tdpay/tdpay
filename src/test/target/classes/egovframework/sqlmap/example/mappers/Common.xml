@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.cmmn.service.impl.CommonMapper">
+		
+	<select id="commonBankList" parameterType="Map" resultType="java.util.HashMap">
+		select bank_code cd,
+			   bank_nm nm
+		  from tb_bank
+		 order by bank_code asc 
+	</select>
+	
+	<select id="commonhighStoreIdList" parameterType="Map" resultType="java.util.HashMap">
+	 select a.store_id cd,
+			a.business_nm nm  
+	   from tb_store a
+	  inner join tb_store_role b
+	     on a.store_id = b.store_id
+	    and b.role_id = '1002'
+	  order by a.created_datetime
+	</select>	
+	
+	<select id="commonhighStoreId2List" parameterType="Map" resultType="java.util.HashMap">
+	 select a.store_id cd,
+			a.business_nm nm  
+	   from tb_store a
+	  inner join tb_store_role b
+	     on a.store_id = b.store_id
+	    and b.role_id = '1003'
+  	    <if test="cd != null and cd != ''">
+		and a.high_store_id = #{cd}
+		</if>	    
+	</select>	
+	
+	<select id="commonhighStoreId3List" parameterType="Map" resultType="java.util.HashMap">
+	 select a.store_id cd,
+			a.business_nm nm  
+	   from tb_store a
+	  inner join tb_store_role b
+	     on a.store_id = b.store_id
+	    and b.role_id = '1004'
+  	    <if test="cd != null and cd != ''">
+		and a.high_store_id = #{cd}
+		</if>	    
+	</select>	
+	
+	<select id="commonEmailList" parameterType="Map" resultType="java.util.HashMap">
+		select b.code_nm cd,
+			   b.code_detail nm
+          from tb_code a
+		 inner join tb_code b
+            on a.code_id = b.high_code_id
+		 order by b.no asc, b.code_id asc
+	</select>	
+	
+	<select id="commonHighStoreList" parameterType="Map" resultType="java.util.HashMap">
+	select store_id cd,
+           business_nm nm
+      from tb_store
+	 where high_store_id = #{cd}
+	 order by created_datetime
+	</select>	
+	
+	<select id="commonCardCodeList" parameterType="Map" resultType="java.util.HashMap">
+		select cardcode cd,
+		       cardname nm
+		  from tb_card_code
+	</select>	
+	
+	<select id="checkId" parameterType="Map" resultType="int">
+	select count(*) cnt
+      from tb_store
+	 where store_id = #{store_id}
+	</select>	
+	
+	<select id="store_id" parameterType="Map" resultType="int">
+	select count(*) cnt
+      from tb_store a
+     inner join tb_store_role b 
+        on a.store_id = b.store_id
+       and b.role_id = '1004'
+	 where a.store_id = #{store_id}
+	</select>	
+	
+	<select id="cp_id" parameterType="String" resultType="String">
+	select max(a.cpid) cpid
+      from tb_store a
+     inner join tb_store_role b 
+        on a.store_id = b.store_id
+       and b.role_id = '1004'
+	 where a.store_id = #{store_id}
+	</select>	
+	
+	<select id="fileInfo" parameterType="Map" resultType="java.util.HashMap">
+		 select path
+		   from tb_file
+		  where no = #{no}
+	</select>	
+	
+</mapper>

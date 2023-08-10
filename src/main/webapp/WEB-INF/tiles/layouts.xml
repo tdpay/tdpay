@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+ 
+<tiles-definitions>
+
+        
+    <definition name="mainTemplate" template="/WEB-INF/jsp/egovframework/example/layout/main.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/jsp/egovframework/example/layout/header.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/egovframework/example/layout/footer.jsp" />
+    </definition>
+    
+    <definition name="mainTemplate2" template="/WEB-INF/jsp/egovframework/example/layout/main2.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/jsp/egovframework/example/layout/header.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/egovframework/example/layout/footer.jsp" />
+    </definition>
+    
+    <definition name="log/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/log/{1}.jsp" />
+    </definition>
+   <definition name="user/mypage_info" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/user/mypage_info.jsp" />
+    </definition>    
+    <definition name="withhold/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/withhold/{1}.jsp" />
+    </definition>    
+    <definition name="sales/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/sales/{1}.jsp" />
+    </definition>     
+    <definition name="history/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/history/{1}.jsp" />
+    </definition>
+    <definition name="manage/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/manage/{1}.jsp" />
+    </definition>
+    <definition name="manage2/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/manage2/{1}.jsp" />
+    </definition>
+    <definition name="notice/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/notice/{1}.jsp" />
+    </definition>
+    <definition name="settlement/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/settlement/{1}.jsp" />
+    </definition>
+    <definition name="limitchange/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/limitchange/{1}.jsp" />
+    </definition>    
+    <definition name="cash_receipt/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/cash_receipt/{1}.jsp" />
+    </definition>    
+    <definition name="payment/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/payment/{1}.jsp" />
+    </definition>
+    <definition name="payment2/payment" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/payment2/payment.jsp" />
+    </definition>
+    <definition name="setup/*" extends="mainTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/setup/{1}.jsp" />
+    </definition>
+
+   <definition name="main/*" extends="mainTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/main/{1}.jsp" />
+    </definition>   
+    
+</tiles-definitions>
+
+

@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.user.service.impl.UserMapper">
+
+	<select id="loginAction" parameterType="Map" resultType="java.util.HashMap">
+		select a.store_id, 
+		       a.passwd,
+		       a.high_store_id,
+		       b.role_id,
+			   a.business_nm,
+			   a.ceo, 
+			   a.ceo_birth,
+		       a.corp_regist_num,
+		       a.corp_regist_num2,
+		       a.corp_type,
+		       a.business_cond,
+		       a.industry_type,
+		       a.tel,
+		       a.fax,
+		       a.phone_num,
+		       a.email,
+		       a.contract_date,
+		       a.bank_code,
+		       a.account_num,
+		       a.state,
+		       a.hompage,
+		       a.zip_code,
+		       a.detail_address,
+		       a.terminal_id,
+		       a.imei,
+		       a.cpid,
+		       a.person_nm1,
+		       a.person_phone1,
+		       a.person_email1,
+		       a.person_nm2,
+		       a.person_phone2,
+		       a.person_email2,
+		       a.person_nm3,
+		       a.person_phone3,
+		       a.person_email3,
+		       a.tax,
+		       a.deposit,	
+			   a.itg_limitset,
+			   a.daily_transaction_limit,
+			   a.monthly_transaction_limit,
+			   a.samecard_daily_limit,
+			   a.transaction_limit,
+			   a.samecard_daily_approvals,
+			   a.installment_months,
+			   a.terminal,
+			   a.credit_card_k,
+			   a.credit_card,
+			   a.account_transfer,
+			   a.virtual_account,
+			   a.gift_voucher,
+			   a.smart_gift_voucher,
+			   a.book_gift_voucher,
+			   a.payment_device,
+		       a.commission,
+		       a.period,
+		       a.settlement_type,
+		       a.login_first,
+		       a.session_key,
+		       a.session_limit,
+		       a.id_firstset,
+		       a.id_firstset1,
+		       a.id_firstset2,
+		       a.created_id,
+		       a.created_datetime,
+		       a.updated_id,
+		       a.updated_datetime,
+		       date_format(sysdate(), '%Y.%m.%d %h:%i:%s') today
+		  from tb_store a
+		 inner join tb_store_role b
+		    on a.store_id = b.store_id
+		   <if test="domain != null and domain != '' ">
+		 inner join tb_domain c
+		    on b.role_id = c.role_id
+		   </if>
+		 where 1 = 1
+		   and a.store_id = #{loginId}
+		   <if test="domain != null and domain != '' ">
+		   and c.domain = #{domain}
+		   </if>
+		   and a.state = 'Y'
+	</select>
+	
+	<select id="ipCheck" parameterType="Map" resultType="java.util.HashMap">
+	select a.domain, GROUP_CONCAT(b.ip SEPARATOR '|') ip
+      from tb_domain a 
+	 inner join tb_connect_ip b
+        on a.role_id = b.role_id
+	 where b.use_yn = 'Y'
+       and a.domain = #{domain}
+     group by a.domain 
+	</select>
+
+    <select id="findUserByMenu" parameterType="Map" resultType="java.util.HashMap">
+	select c.menu_id,
+           c.high_menu_id,
+           c.menu_nm,
+           c.depth,
+           c.menu_url,
+           c.menu_view 
+      from tb_store_role a
+	 inner join tb_menu_mapping b
+        on a.role_id = b.role_id 
+     inner join tb_menu c
+        on b.menu_id = c.menu_id
+	<if test="store_id != null and store_id != '' ">        
+	   and a.store_id = #{store_id}
+	</if>   
+       and c.menu_view = 'Y'
+       and c.depth = 1
+     order by c.no asc 
+    </select>
+    
+    <select id="findUserByMenuM" parameterType="Map" resultType="java.util.HashMap">
+ select a.*
+   from (
+		select c.menu_id,
+			   c.high_menu_id,
+			   c.menu_nm,
+			   c.depth,
+			   case when c.menu_id = d.high_menu_id then d.menu_url
+			   else concat('/app', c.menu_url)
+			   end menu_url, 
+			   c.menu_view,
+			   c.no
+		  from tb_store_role a
+		 inner join tb_menu_mapping b
+			on a.role_id = b.role_id 
+		 inner join tb_menu c
+			on b.menu_id = c.menu_id
+		   and a.store_id = 'gmgMaster'
+		   and c.menu_view = 'Y'
+		   and c.depth = 1
+		   and c.menu_id not in ('11000', '12000')     		
+		  left join (
+				select c.high_menu_id,
+					   concat('/app', c.menu_url) menu_url
+				  from tb_store_role a
+				 inner join tb_menu_mapping b
+					on a.role_id = b.role_id 
+				 inner join tb_menu c
+					on b.menu_id = c.menu_id	         
+				   and a.store_id = 'gmgMaster'	    
+				   and c.menu_view = 'Y'
+				   and c.depth = 2
+				   and c.menu_id in ('6001', '7001', '9001', '10001' )            
+			   )d
+			on c.menu_id = d.high_menu_id  
+		 union 
+		select c.menu_id,
+			   c.high_menu_id,
+			   c.menu_nm,
+			   c.depth,
+			   concat('/app', c.menu_url) menu_url,    
+			   c.menu_view,
+			   c.no
+		  from tb_store_role a
+		 inner join tb_menu_mapping b
+			on a.role_id = b.role_id 
+		 inner join tb_menu c
+			on b.menu_id = c.menu_id   
+	<if test="store_id != null and store_id != '' ">        
+	   and a.store_id = #{store_id}
+	</if>   
+		   and c.menu_view = 'Y'
+		   and c.depth = 2
+	<if test="role_id != null and store_id != '1004' ">         		   
+		   and c.high_menu_id = '11000'		
+	</if>  		   
+		)a
+  order by a.no asc
+    </select>
+    
+    <select id="findUserBySubMenu" parameterType="Map" resultType="java.util.HashMap">
+	select c.menu_id,
+           c.high_menu_id,
+           c.menu_nm,
+           c.depth,
+           c.menu_url,
+           c.menu_view 
+      from tb_store_role a
+	 inner join tb_menu_mapping b
+        on a.role_id = b.role_id 
+     inner join tb_menu c
+        on b.menu_id = c.menu_id
+	<if test="store_id != null and store_id != '' ">        
+	   and a.store_id = #{store_id}
+	</if>   
+       and c.menu_view = 'Y'
+       and c.depth = 2
+     order by c.no asc 
+    </select>
+    
+    <select id="findUserBySubMenuM" parameterType="Map" resultType="java.util.HashMap">
+	select c.menu_id,
+           c.high_menu_id,
+           c.menu_nm,
+           c.depth,
+           concat('/app', c.menu_url) menu_url,             
+           c.menu_view,
+           substr(c.menu_id, 3, 2)
+      from tb_store_role a
+	 inner join tb_menu_mapping b
+        on a.role_id = b.role_id 
+     inner join tb_menu c
+        on b.menu_id = c.menu_id
+	   <if test="store_id != null and store_id != '' ">        
+	   and a.store_id = #{store_id}
+	   </if>  
+       and c.menu_view = 'Y'
+       and c.depth = 2
+       <if test="main_first != null and main_first != '' ">
+       and substr(c.menu_id, 3, 2) = '01'
+	   </if> 
+       and c.high_menu_id != '12000'
+     order by c.no asc     
+    </select>    
+    
+    <select id="findAdmCnt" parameterType="Map" resultType="int">
+	select count(*) cnt  
+	  from tb_adm_menu_mapping
+	 where 1 = 1
+	<if test="store_id != null and store_id != '' ">        
+	   and store_id = #{store_id}
+	</if> 
+    </select>
+    
+    <select id="findAdmByMenu" parameterType="Map" resultType="java.util.HashMap">
+		select a.menu_id, 
+			   a.menu_nm,
+			   a.menu_url 
+		  from tb_menu a    
+		 inner join 
+			   (
+				select distinct a.store_id,
+					   a.menu_id
+				  from tb_adm_menu_mapping a
+				 where 1 = 1
+				 <if test="store_id != null and store_id != '' ">        
+	               and a.store_id = #{store_id}
+	             </if>  
+			   )b
+			on a.menu_id = b.menu_id      
+		 where 1 = 1
+		   and a.menu_view = 'Y'
+		   and a.depth = 1
+		 union all
+		select a.menu_id, 
+			   a.menu_nm,
+			   a.menu_url 
+		  from tb_menu a    
+		 inner join 
+			   (
+				select distinct a.store_id,
+					   b.high_menu_id
+				  from tb_adm_menu_mapping a
+				 inner join tb_menu b
+					on a.menu_id = b.menu_id
+				 where 1 = 1
+				 <if test="store_id != null and store_id != '' ">        
+	               and a.store_id = #{store_id}
+	             </if>  
+			   )b
+			on a.menu_id = b.high_menu_id      
+		 where 1 = 1
+		   and a.menu_view = 'Y'
+		   and a.depth = 1
+    </select>
+    
+    <select id="findAdmByMenuM" parameterType="Map" resultType="java.util.HashMap">
+		select a.menu_id, 
+			   a.menu_nm,
+			   concat('/app', a.menu_url) menu_url
+		  from tb_menu a    
+		 inner join 
+			   (
+				select distinct a.store_id,
+					   a.menu_id
+				  from tb_adm_menu_mapping a
+				 where 1 = 1     
+				 <if test="store_id != null and store_id != '' ">        
+	               and a.store_id = #{store_id}
+	             </if>   
+			   )b
+			on a.menu_id = b.menu_id      
+		 where 1 = 1
+		   and a.menu_view = 'Y'
+		   and a.depth = 1
+		 union all
+		select a.menu_id, 
+			   a.menu_nm,
+			   a.menu_url 
+		  from tb_menu a    
+		 inner join 
+			   (
+				select distinct a.store_id,
+					   b.high_menu_id
+				  from tb_adm_menu_mapping a
+				 inner join tb_menu b
+					on a.menu_id = b.menu_id
+				 where 1 = 1    
+				 <if test="store_id != null and store_id != '' ">        
+	               and a.store_id = #{store_id}
+	             </if>   
+			   )b
+			on a.menu_id = b.high_menu_id      
+		 where 1 = 1
+		   and a.menu_view = 'Y'
+		   and a.depth = 1
+<!--           and a.menu_id != '7000'	-->
+         union              
+		select a.menu_id, 
+			   a.menu_nm,
+			   concat('/app', a.menu_url) menu_url
+		  from tb_menu a    
+		 inner join 
+			   (
+				select distinct a.store_id,
+                       a.menu_id,
+					   b.high_menu_id
+				  from tb_adm_menu_mapping a
+				 inner join tb_menu b
+					on a.menu_id = b.menu_id
+				 where 1 = 1    
+				 <if test="store_id != null and store_id != '' ">        
+	               and a.store_id = #{store_id}
+	             </if>   
+<!--				   and b.high_menu_id = '7000'		-->
+			   )b
+			on a.menu_id = b.menu_id      
+		 where 1 = 1
+		   and a.menu_view = 'Y'
+		   and a.depth = 2 
+    </select>
+    
+    <select id="findAdmBySubMenu" parameterType="Map" resultType="java.util.HashMap">
+	select a.menu_id, 
+           a.high_menu_id,
+           a.menu_nm,
+           a.menu_url
+	  from tb_menu a 
+	 inner join 
+		   (
+			select menu_id, 
+				   store_id
+              from tb_adm_menu_mapping
+			 where 1 = 1
+			 <if test="store_id != null and store_id != '' ">        
+               and store_id = #{store_id}
+             </if>     
+		   )b
+        on a.menu_id = b.menu_id
+	 where 1 = 1
+       and a.menu_view = 'Y'
+	   and a.depth = 2
+       and a.menu_id != '8001' 
+     order by no asc
+    </select>
+        
+    <select id="findAdmBySubMenuM" parameterType="Map" resultType="java.util.HashMap">
+	select a.menu_id, 
+           a.high_menu_id,
+           a.menu_nm,
+           concat('/app', a.menu_url) menu_url
+	  from tb_menu a 
+	 inner join 
+		   (
+			select min(a.menu_id) menu_id, 
+				   max(a.store_id) store_id,
+                   b.high_menu_id
+              from tb_adm_menu_mapping a
+			 inner join tb_menu b
+                on a.menu_id = b.menu_id
+			 where 1 = 1			          
+			 <if test="store_id != null and store_id != '' ">        
+               and a.store_id = #{store_id}
+             </if>      
+		 	 group by b.high_menu_id    
+		   )b
+        on a.menu_id = b.menu_id
+	 where 1 = 1
+       and a.menu_view = 'Y'
+	   and a.depth = 2
+<!--       and a.high_menu_id != '7000'		-->
+     order by no asc
+    </select>
+    
+    <select id="findAdmBySubMenuM2" parameterType="Map" resultType="java.util.HashMap">
+	select a.menu_id, 
+           a.high_menu_id,
+           a.menu_nm,
+           concat('/app', a.menu_url) menu_url
+	  from tb_menu a 
+	 inner join 
+		   (
+			select menu_id, 
+				   store_id
+              from tb_adm_menu_mapping
+			 where 1 = 1			          
+			 <if test="store_id != null and store_id != '' ">        
+               and store_id = #{store_id}
+             </if> 
+		   )b
+        on a.menu_id = b.menu_id
+	 where 1 = 1
+       and a.menu_view = 'Y'
+	   and a.depth = 2
+<!--       and a.high_menu_id != '7000'			-->
+     order by no asc
+    </select>
+    
+    <select id="findAdmBySubMenuM3" parameterType="Map" resultType="java.util.HashMap">
+	select a.menu_id, 
+           a.high_menu_id,
+           a.menu_nm,
+           concat('/app', a.menu_url) menu_url
+	  from tb_menu a 
+	 inner join 
+		   (
+			select menu_id, 
+				   store_id
+              from tb_adm_menu_mapping
+			 where 1 = 1			          
+			 <if test="store_id != null and store_id != '' ">        
+               and store_id = #{store_id}
+             </if> 
+		   )b
+        on a.menu_id = b.menu_id
+	 where 1 = 1
+       and a.menu_view = 'Y'
+	   and a.depth = 2
+     order by no asc
+    </select>
+    
+    <select id="findUserByRole" parameterType="Map" resultType="java.util.HashMap">
+	select a.role_id, b.menu_url
+      from tb_menu_mapping a
+	 inner join tb_menu b
+        on a.menu_id = b.menu_id
+       and b.menu_url != ''
+       <if test="role_id != null and role_id != '' ">        
+       and a.role_id = #{role_id}
+       </if>   
+	 order by b.no asc
+    </select>
+    
+    <select id="findSmsUser" parameterType="Map" resultType="java.util.HashMap">
+	 select a.phone_num,
+	 		concat(left(a.phone_num, 8), '***') phone_num2,
+            b.business_nm
+	   from (
+			select replace(a.phone_num, '-','') as phone_num,
+				   a.store_id
+			  from tb_phone a
+			 where a.store_id = #{store_id}
+			)a 
+	  inner join tb_store b
+         on a.store_id = b.store_id
+    </select>
+    
+    <select id="findEmailUser" parameterType="Map" resultType="java.util.HashMap">
+	 select a.email,
+            b.business_nm
+	   from (
+			select a.email,
+				   a.store_id
+			  from tb_email a
+			 where a.store_id = #{store_id}
+			)a 
+	  inner join tb_store b
+         on a.store_id = b.store_id   
+    </select>
+    
+	<insert id="phoneAdd" parameterType="Map">
+	   insert into tb_phone
+			       (
+			        store_id,
+					phone_num,
+					created_id,   
+					created_datetime        
+			       )
+		           values
+		           (
+			        #{store_id},
+					#{phone_num},
+					#{created_id},   
+					now()   
+		           )	    	
+	</insert>	  
+	
+	<insert id="emailAdd" parameterType="Map">
+	   insert into tb_email
+			       (
+			        store_id,
+					email,
+					created_id,   
+					created_datetime        
+			       )
+		           values
+		           (
+			        #{store_id},
+					#{email},
+					#{created_id},   
+					now()   
+		           )	    	
+	</insert>	  
+	
+	<update id="keepLogin" parameterType="Map"> 
+		UPDATE tb_store 
+		   SET session_key = #{sessionId} , 
+		       session_limit = #{sessionLimit} 
+		 WHERE store_id = #{userId} 
+    </update> 
+    
+    <select id="checkUserWithSessionKey" parameterType="Map" resultType="java.util.HashMap"> 
+		select a.store_id, 
+		       a.passwd,
+		       a.high_store_id,
+		       b.role_id,
+			   a.business_nm,
+			   a.ceo, 
+			   a.ceo_birth,
+		       a.corp_regist_num,
+		       a.corp_regist_num2,
+		       a.corp_type,
+		       a.business_cond,
+		       a.industry_type,
+		       a.tel,
+		       a.fax,
+		       a.phone_num,
+		       a.email,
+		       a.contract_date,
+		       a.bank_code,
+		       a.account_num,
+		       a.state,
+		       a.hompage,
+		       a.zip_code,
+		       a.address,
+		       a.detail_address,
+		       a.terminal_id,
+		       a.imei,
+		       a.person_nm1,
+		       a.person_phone1,
+		       a.person_email1,
+		       a.person_nm2,
+		       a.person_phone2,
+		       a.person_email2,
+		       a.person_nm3,
+		       a.person_phone3,
+		       a.person_email3,
+		       a.tax,
+		       a.commission,
+		       a.period,
+		       a.settlement_type,
+		       a.login_first,
+		       a.session_key,
+		       a.session_limit,
+		       a.created_id,
+		       a.created_datetime,
+		       a.updated_id,
+		       a.updated_datetime
+		  from tb_store a
+		 inner join tb_store_role b
+		    on a.store_id = b.store_id
+		 where 1 = 1
+		   and a.session_key = #{value} 
+    </select>
+    
+    <select id="idSearch" parameterType="Map" resultType="java.util.HashMap"> 
+		select a.store_id, a.account_num 
+		  from tb_store a
+		 where 1 = 1
+		   and replace(a.ceo_birth, '-', '') = replace(#{ceo_birth}, '-', '') 
+		   and replace(a.corp_regist_num, '-', '') = replace(#{corp_regist_num}, '-', '')
+    </select>
+    
+    <select id="pwSearch" parameterType="Map" resultType="java.util.HashMap"> 
+		select a.account_num, a.phone_num, a.email, a.store_id, replace(a.ceo_birth, '-', '') ceo_birth, replace(a.corp_regist_num2, '-', '') as corp_regist_num2
+		  from tb_store a
+		 where 1 = 1
+		   and a.store_id = #{store_id}
+		   and replace(a.corp_regist_num, '-', '') = replace(#{corp_regist_num}, '-', '')
+    </select>
+
+	<update id="pwChange" parameterType="Map"> 
+		UPDATE tb_store 
+		   SET passwd = #{passwd}
+		   <if test="login_first != null and login_first != '' ">        
+		     , login_first = #{login_first}
+		   </if>  
+		 WHERE store_id = #{store_id} 
+    </update> 
+
+	<update id="myPageMod" parameterType="Map"> 
+		UPDATE tb_store 
+		   SET ceo = #{ceo} 
+		    ,  ceo_birth = #{ceo_birth} 
+		    ,  business_cond = #{business_cond} 
+		    ,  business_nm = #{business_nm} 
+		    ,  corp_regist_num = #{corp_regist_num} 
+		    ,  corp_type = #{corp_type} 
+		    ,  corp_regist_num2 = #{corp_regist_num2} 
+		    ,  contract_date = #{contract_date} 
+		    ,  industry_type = #{industry_type} 
+		    ,  tel = #{tel} 
+		    ,  fax = #{fax} 
+		    ,  phone_num = #{phone_num} 
+		    ,  email = #{email} 
+		    <if test="bank_code != null and bank_code != '' ">     
+		    ,  bank_code = #{bank_code} 
+		    </if>
+		    <if test="account_num != null and account_num != '' ">     
+		    ,  account_num = #{account_num} 
+		    </if>
+		    ,  hompage = #{hompage} 
+		    ,  zip_code = #{zip_code} 
+		    ,  address = #{address} 
+		    ,  detail_address = #{detail_address} 
+		    <if test="terminal_id != null and terminal_id != '' ">      
+		    ,  terminal_id = #{terminal_id}
+		    </if> 
+		    <if test="imei != null and imei != '' ">      
+		    ,  imei = #{imei} 
+		    </if>
+		    ,  person_nm1 = #{person_nm1} 
+		    ,  person_phone1 = #{person_phone1} 
+		    ,  person_email1 = #{person_email1} 
+		    ,  person_nm2 = #{person_nm2} 
+		    ,  person_phone2 = #{person_phone2} 
+		    ,  person_email2 = #{person_email2} 
+		    ,  person_nm3 = #{person_nm3} 
+		    ,  person_phone3 = #{person_phone3} 
+		    ,  person_email3 = #{person_email3} 
+		    <if test="tax != null and tax != '' ">        
+		    ,  tax = #{tax} 
+		    </if>
+		    <if test="commission != null and commission != '' ">        
+		    ,  commission = #{commission} 
+		    </if>
+		    <if test="period != null and period != '' ">        
+		    ,  period = #{period} 
+		    </if>
+		    <if test="settlement_type != null and settlement_type != '' ">        
+		    ,  settlement_type = #{settlement_type} 
+		    </if>
+		    ,  login_first = #{login_first} 
+		    
+		    ,  id_firstset = #{id_firstset} 
+		    ,  id_firstset1 = #{id_firstset1} 
+		    ,  id_firstset2 = #{id_firstset2} 
+		    
+		    ,  updated_id = #{updated_id} 
+		    ,  updated_datetime = now()
+		 WHERE store_id = #{store_id} 
+    </update> 
+    
+	<insert id="logAdd" parameterType="Map"> 
+		INSERT INTO tb_log
+		            (
+			            login_id,
+			            ip,
+			            action,
+			            url,
+			            login,
+			            created_datetime,
+			            updated_datetime
+		            )
+		            select 
+			            #{login_id}, 
+			            #{ip}, 
+				        case when #{url} like '%data.do' then '검색'
+							 when #{url} like '%Add.do' then '등록'
+				             when #{url} like '%Mod.do' then '수정'
+				             when #{url} like '%del.do' then '삭제'
+						else '링크'
+					    end,			            
+			            #{url}, 
+				        case when #{url} like '%app%' then '모바일 로그인'
+					 	else 'PC 로그인'
+					    end,			            
+			            #{loginTime},
+			            now()
+		            
+		            
+    </insert> 
+    
+</mapper>

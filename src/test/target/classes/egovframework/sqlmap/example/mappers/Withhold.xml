@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.withhold.service.impl.WithholdMapper">
+
+	<resultMap id="withhold" type="egovframework.example.withhold.service.WithholdVO">
+		<result property="cardcode" column="cardcode"/>
+		<result property="cardname" column="cardname"/>
+		<result property="rate" column="rate"/>
+		<result property="amount" column="amount"/>
+		<result property="dealing_yn" column="dealing_yn"/>
+		<result property="cancle_yn" column="cancle_yn"/>
+		<result property="cancle_amount" column="cancle_amount"/>
+	</resultMap>
+	
+	<select id="selectCardList" resultMap="withhold">
+		select
+			tb_card_code.cardcode,
+			tb_card_code.cardname,
+			ifnull(tb_card_fee.rate,0) as rate
+		from tb_card_code
+		left join tb_card_fee
+			on tb_card_code.cardcode = tb_card_fee.cardcode
+	</select>
+		
+	<select id="selectWithholdList" parameterType="searchWithholdVO" resultMap="withhold">
+		with card_info as(
+			select
+				tb_card_code.cardcode,
+				tb_card_code.cardname,
+				ifnull(tb_card_fee.rate,0) as rate
+			from tb_card_code
+			left join tb_card_fee
+				on tb_card_code.cardcode = tb_card_fee.cardcode
+		),
+		payment_data as(
+			select
+				ifnull(sum(aa.amount),0) as amount,
+				aa.authdate,
+				aa.cardno,
+				aa.cardcode,
+				aa.cardname,
+				aa.dealing_yn
+			from (
+				select 
+					ifnull(a.amount,0) as amount,
+					a.authdate,
+					a.cardno,
+					a.cardcode,
+					d.cardname,
+					case when a.daoutrx = b.daoutrx and a.cpid = b.cpid then 'Y'
+					else 'N'
+					end dealing_yn
+				from tb_card_auth a
+				left join (select daoutrx, cpid, max(created_datetime) created_datetime, canceltype from tb_card_cancel group by daoutrx, cpid, canceltype) b
+					on a.daoutrx = b.daoutrx
+					and a.cpid = b.cpid
+				left join tb_card_code d
+					on a.cardcode = d.cardcode
+				where a.resultcode = '0000'
+				union all
+				select  
+					ifnull(a.amount,0) as amount,
+					a.settdate authdate,
+					a.cardno,
+					a.cardcode,
+					a.cardname,
+					case when a.daoutrx = b.daoutrx and a.cpid = b.cpid then 'Y'
+					else 'N'
+					end dealing_yn					   
+				from tb_pay_notice a
+				left join (select daoutrx, cpid, max(created_datetime) created_datetime, canceltype from tb_card_cancel group by daoutrx, cpid, canceltype) b
+					on a.daoutrx = b.daoutrx
+					and a.cpid = b.cpid
+			) aa
+			where 1=1
+			<if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+			and date(aa.authdate) BETWEEN #{start_datetime} AND #{end_datetime}
+			</if>
+			and aa.dealing_yn='N'
+			group by aa.cardcode, aa.dealing_yn
+		),
+		cancle_data as (
+			select 
+				sum(aa.amount) amount,
+				aa.dealing_yn as cancle_yn,
+				aa.cardcode,
+				aa.cardname,
+				aa.authdate
+			from 
+			(
+				select 
+					a.no,
+					a.daoutrx,
+					a.userid,
+					a.amount,
+					a.authdate,
+					b.created_datetime canceldate,
+					b.canceltype,
+					case when a.daoutrx = b.daoutrx and a.cpid = b.cpid then 'Y'
+					else 'N'
+					end dealing_yn,
+					a.username,
+					a.authno,
+					a.quota,
+					a.orderno,
+					a.cardno,
+					a.cardcode,
+					d.cardname,
+					a.cpid,
+					a.paymenttype,
+					'1' as cp_type
+				from tb_card_auth a
+				left join (select daoutrx, cpid, max(created_datetime) created_datetime, canceltype from tb_card_cancel group by daoutrx, cpid, canceltype) b
+					on a.daoutrx = b.daoutrx
+					and a.cpid = b.cpid
+				left join tb_card_code d
+					on a.cardcode = d.cardcode
+				union all
+				select 
+					a.no,
+					a.daoutrx, 
+					a.terminalid,    
+					a.amount,
+					a.settdate authdate,
+					b.created_datetime canceldate,
+					b.canceltype,
+					case when a.daoutrx = b.daoutrx and a.cpid = b.cpid then 'Y'
+					else 'N'
+					end dealing_yn,
+					'' username,
+					a.authno,
+					a.allotmon quota,
+					'' orderno,
+					a.cardno,
+					a.cardcode,
+					a.cardname,
+					a.cpid,
+					a.paymenttype,
+					'1' as cp_type						   
+				from tb_pay_notice a
+				left join (select daoutrx, cpid, max(created_datetime) created_datetime, canceltype from tb_card_cancel group by daoutrx, cpid, canceltype) b
+					on a.daoutrx = b.daoutrx
+					and a.cpid = b.cpid
+			) aa
+			where 1=1
+			<if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+			and date(aa.authdate) BETWEEN #{start_datetime} AND #{end_datetime}
+			</if>
+			and aa.dealing_yn='Y'
+			group by aa.cardcode, aa.dealing_yn
+		)
+		SELECT 	
+			card_info.cardcode,
+			card_info.cardname,
+			card_info.rate,
+			ifnull(payment_data.amount,0) as amount,
+			ifnull(payment_data.dealing_yn,'N') as dealing_yn,
+			ifnull(cancle_data.cancle_yn,'Y') as cancle_yn,
+			ifnull(cancle_data.amount,0) as cancle_amount
+		from card_info 
+		left join payment_data
+		 	on card_info.cardcode = payment_data.cardcode
+		left join cancle_data
+			on card_info.cardcode = cancle_data.cardcode
+	</select>
+</mapper>

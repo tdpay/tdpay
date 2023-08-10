@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+		<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+		<typeAlias alias="searchManageVO" type="egovframework.example.manage.service.ManageDefaultVO"/>
+		<typeAlias alias="manageVO" type="egovframework.example.manage.service.ManageVO"/>
+		<typeAlias alias="searchManage2VO" type="egovframework.example.manage2.service.Manage2DefaultVO"/>
+		<typeAlias alias="manage2VO" type="egovframework.example.manage2.service.Manage2VO"/>
+		<typeAlias alias="searchNoticeVO" type="egovframework.example.notice.service.NoticeDefaultVO"/>
+		<typeAlias alias="noticeVO" type="egovframework.example.notice.service.NoticeVO"/>
+		<typeAlias alias="searchPaymentVO" type="egovframework.example.payment.service.PaymentDefaultVO"/>
+		<typeAlias alias="paymentVO" type="egovframework.example.payment.service.PaymentVO"/>
+		<typeAlias alias="searchPayment2VO" type="egovframework.example.payment2.service.Payment2DefaultVO"/>
+		<typeAlias alias="payment2VO" type="egovframework.example.payment2.service.Payment2VO"/>
+		<typeAlias alias="searchHistoryVO" type="egovframework.example.history.service.HistoryDefaultVO"/>
+		<typeAlias alias="historyVO" type="egovframework.example.history.service.HistoryVO"/>
+		<typeAlias alias="searchSettlementVO" type="egovframework.example.settlement.service.SettlementDefaultVO"/>
+		<typeAlias alias="settlementVO" type="egovframework.example.settlement.service.SettlementVO"/>
+		<typeAlias alias="searchSetupVO" type="egovframework.example.setup.service.SetupDefaultVO"/>
+		<typeAlias alias="setupVO" type="egovframework.example.setup.service.SetupVO"/>
+		<typeAlias alias="searchMainVO" type="egovframework.example.main.service.MainDefaultVO"/>
+		<typeAlias alias="mainVO" type="egovframework.example.main.service.MainVO"/>
+		<typeAlias alias="searchLogVO" type="egovframework.example.log.service.LogDefaultVO"/>
+		<typeAlias alias="logVO" type="egovframework.example.log.service.LogVO"/>
+		<typeAlias alias="searchLimitchangeVO" type="egovframework.example.limitchange.service.LimitchangeDefaultVO"/>
+		<typeAlias alias="limitchangeVO" type="egovframework.example.limitchange.service.LimitchangeVO"/>
+		<typeAlias alias="searchWithholdVO" type="egovframework.example.withhold.service.WithHoldDefaultVO"/>	
+		<typeAlias alias="withholdVO" type="egovframework.example.withhold.service.WithholdVO"/>
+		<typeAlias alias="searchSalesVO" type="egovframework.example.sales.service.SalesDefaultVO"/>	
+		<typeAlias alias="salesVO" type="egovframework.example.sales.service.SalesVO"/>	
+    </typeAliases>
+</configuration>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+ 
+<tiles-definitions>
+
+        
+    <definition name="appTemplate" template="/WEB-INF/jsp/egovframework/example/app/layout/app_main.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/jsp/egovframework/example/app/layout/app_header.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="" />
+    </definition>
+    
+    <definition name="appTemplate2" template="/WEB-INF/jsp/egovframework/example/app/layout/app_main.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/jsp/egovframework/example/app/layout/app_header2.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="" />
+    </definition>
+    
+    <definition name="app/main/*" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/main/{1}.jsp" />
+    </definition>
+        
+    <definition name="app/user/mypage_info" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/user/mypage_info.jsp" />
+    </definition> 
+       
+    <definition name="app/history/history_all" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_all.jsp" />
+    </definition>
+    <definition name="app/history/history_all_detail" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_all_detail.jsp" />
+    </definition>    
+    <definition name="app/history/history_all_detail_view" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_all_detail_view.jsp" />
+    </definition>    
+    <definition name="app/history/history_fail" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_fail.jsp" />
+    </definition>
+    
+    <definition name="app/history/history_all_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_all_search.jsp" />
+    </definition>
+    <definition name="app/history/history_all_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_all_view.jsp" />
+    </definition>
+    <definition name="app/history/history_fail_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_fail_search.jsp" />
+    </definition>
+    <definition name="app/history/history_fail_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_fail_view.jsp" />
+    </definition>
+    
+    <definition name="app/history/history_deduct" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/history/history_deduct.jsp" />
+    </definition>
+        
+    <definition name="app/manage/manage_all" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_all.jsp" />
+    </definition>
+    <definition name="app/manage/manage_all_modify" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_all_modify.jsp" />
+    </definition>
+    <definition name="app/manage/manage_all_register" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_all_register.jsp" />
+    </definition>
+    <definition name="app/manage/manage_all_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_all_search.jsp" />
+    </definition>
+    <definition name="app/manage/manage_all_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_all_view.jsp" />
+    </definition>
+    
+    <definition name="app/manage/manage_branch" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_branch.jsp" />
+    </definition>
+    <definition name="app/manage/manage_branch_modify" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_branch_modify.jsp" />
+    </definition>
+    <definition name="app/manage/manage_branch_register" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_branch_register.jsp" />
+    </definition>
+    <definition name="app/manage/manage_branch_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_branch_search.jsp" />
+    </definition>
+    <definition name="app/manage/manage_branch_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage/manage_branch_view.jsp" />
+    </definition>
+    
+    <definition name="app/manage2/manage2" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage2/manage2.jsp" />
+    </definition>
+    <definition name="app/manage2/manage2_modify" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage2/manage2_modify.jsp" />
+    </definition>
+    <definition name="app/manage2/manage2_register" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage2/manage2_register.jsp" />
+    </definition>
+    <definition name="app/manage2/manage2_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage2/manage2_search.jsp" />
+    </definition>
+    <definition name="app/manage2/manage2_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/manage2/manage2_view.jsp" />
+    </definition>
+    
+    <definition name="app/notice/notice01" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice01.jsp" />
+    </definition>
+    <definition name="app/notice/notice02" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice02.jsp" />
+    </definition>
+    <definition name="app/notice/notice03" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice03.jsp" />
+    </definition>
+    <definition name="app/notice/notice04" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice04.jsp" />
+    </definition>
+    <definition name="app/notice/notice05" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice05.jsp" />
+    </definition>
+    <definition name="app/notice/notice06" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice06.jsp" />
+    </definition>
+    <definition name="app/notice/notice07" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice07.jsp" />
+    </definition>
+    
+    <definition name="app/notice/notice01_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice01_view.jsp" />
+    </definition>
+    <definition name="app/notice/notice01_write" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice01_write.jsp" />
+    </definition>
+    <definition name="app/notice/notice02_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice02_view.jsp" />
+    </definition>
+    <definition name="app/notice/notice02_write" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice02_write.jsp" />
+    </definition>
+    <definition name="app/notice/notice03_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice03_view.jsp" />
+    </definition>
+    <definition name="app/notice/notice03_write" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice03_write.jsp" />
+    </definition>
+    <definition name="app/notice/notice04_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice04_view.jsp" />
+    </definition>
+    <definition name="app/notice/notice04_write" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice04_write.jsp" />
+    </definition>
+    <definition name="app/notice/notice05_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice05_view.jsp" />
+    </definition>
+    <definition name="app/notice/notice05_write" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice05_write.jsp" />
+    </definition>
+    <definition name="app/notice/notice06_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice06_view.jsp" />
+    </definition>
+    <definition name="app/notice/notice06_write" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice06_write.jsp" />
+    </definition>
+    <definition name="app/notice/notice07_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice07_view.jsp" />
+    </definition>
+    <definition name="app/notice/notice07_write" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/notice/notice07_write.jsp" />
+    </definition>
+    
+    <definition name="app/settlement/calendar" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/calendar.jsp" />
+    </definition>
+    
+    <definition name="app/settlement/settlement_all" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_all.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_all_detail" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_all_detail.jsp" />
+    </definition>    
+    <definition name="app/settlement/settlement_all_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_all_search.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_all_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_all_view.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_all_detail_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_all_detail_view.jsp" />
+    </definition>    
+    <definition name="app/settlement/vat_report" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/vat_report.jsp" />
+    </definition>        
+    
+    <definition name="app/withhold/*" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/withhold/{1}.jsp" />
+    </definition>    
+    <definition name="app/sales/*" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/sales/{1}.jsp" />
+    </definition>         
+    <definition name="app/limitchange/*" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/limitchange/{1}.jsp" />
+    </definition>    
+    <definition name="app/cash_receipt/*" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/cash_receipt/{1}.jsp" />
+    </definition> 
+        
+    <definition name="app/settlement/settlement_manage" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_manage.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_manage_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_manage_search.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_manage_detail" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_manage_detail.jsp" />
+    </definition>    
+    <definition name="app/settlement/settlement_manage_detail_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_manage_detail_view.jsp" />
+    </definition>        
+    
+    <definition name="app/settlement/settlement_branch" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_branch.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_branch_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_branch_search.jsp" />
+    </definition>      
+    <definition name="app/settlement/settlement_branch_detail" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_branch_detail.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_branch_detail_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_branch_detail_view.jsp" />
+    </definition>      
+    
+    <definition name="app/settlement/settlement_store" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_store.jsp" />
+    </definition>    
+    <definition name="app/settlement/settlement_store_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_store_search.jsp" />
+    </definition>        
+    <definition name="app/settlement/settlement_store_detail" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_store_detail.jsp" />
+    </definition>   
+    <definition name="app/settlement/settlement_store_detail_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_store_detail_view.jsp" />
+    </definition>       
+    
+    <definition name="app/settlement/settlement_his" extends="appTemplate">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_his.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_his_search" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_his_search.jsp" />
+    </definition>
+    <definition name="app/settlement/settlement_his_view" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/settlement/settlement_his_view.jsp" />
+    </definition>
+    
+    <definition name="app/payment/*" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/payment/{1}.jsp" />
+    </definition>
+    <definition name="app/payment2/*" extends="appTemplate2">
+        <put-attribute name="body" value="/WEB-INF/jsp/egovframework/example/app/payment2/{1}.jsp" />
+    </definition>
+
+</tiles-definitions>
+
+

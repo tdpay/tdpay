@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.setup.service.impl.SetupMapper">
+
+	<resultMap id="setup" type="egovframework.example.setup.service.SetupVO">
+		<result property="rownum" column="rownum"/>
+		<result property="state" column="state"/>
+		<result property="store_id" column="store_id"/>
+		<result property="ceo" column="ceo"/>
+		<result property="phone_num" column="phone_num"/>
+		<result property="email" column="email"/>
+		<result property="auth_type" column="auth_type"/>
+		<result property="auth_result" column="auth_result"/>
+		<result property="no" column="no"/>
+		<result property="type" column="type"/>
+		<result property="menu_id" column="menu_id"/>
+		<result property="high_menu_id" column="high_menu_id"/>
+		<result property="menu_nm" column="menu_nm"/>
+		<result property="menu_url" column="menu_url"/>
+		<result property="tocnt" column="tocnt"/>
+		<result property="check_yn" column="check_yn"/>
+		<result property="ip" column="ip"/>
+		<result property="memo" column="memo"/>
+		<result property="role_id" column="role_id"/>
+		<result property="use_yn" column="use_yn"/>
+		<result property="bank_code" column="bank_code"/>
+		<result property="bank_nm" column="bank_nm"/>	
+		<result property="cardcode" column="cardcode"/>	
+		<result property="cardname" column="cardname"/>	
+		<result property="rate" column="rate"/>
+		<result property="pgcode" column="pgcode"/>			 
+		<result property="pgname" column="pgname"/>			
+		<result property="pgway" column="pgway"/>				
+		<result property="created_id" column="created_id"/>
+		<result property="created_datetime" column="created_datetime"/>
+		<result property="updated_id" column="updated_id"/>
+		<result property="updated_datetime" column="updated_datetime"/>
+	</resultMap>
+			 
+	<select id="setupBankList" parameterType="searchSetupVO" resultMap="setup">
+  select a.rownum,
+         a.bank_code,
+         a.bank_nm
+    from (
+		 select @ROWNUM:=@ROWNUM+1 AS rownum,
+				a.bank_code,
+				a.bank_nm
+		   from (
+				select bank_code,
+					   bank_nm
+				  from tb_bank
+				 where 1 = 1
+			 <if test="searchKeyword != null and searchKeyword != ''">	
+			       and bank_nm like concat('%', #{searchKeyword}, '%')
+			 </if>  				 
+				 )a
+		   where (SELECT @ROWNUM:=0)=0      
+		  )a
+	</select>
+	
+	<select id="setupBankCnt" parameterType="searchSetupVO" resultType="int">
+		select count(*) cnt
+		  from tb_bank
+		 where 1 = 1
+	       and bank_code = #{bank_code}
+	</select>
+	
+	<insert id="setupBankAdd" parameterType="searchSetupVO" >
+	insert into tb_bank
+				(
+				 bank_code,
+                 bank_nm
+                )
+                values
+                (
+                 #{bank_code},
+                 #{bank_nm}                
+                ) 	
+	</insert>	
+	
+	<delete id="setupBankDel" parameterType="searchSetupVO" >
+	   delete from tb_bank
+	    where bank_code = #{bank_code}
+	</delete>	
+				 
+	<select id="setupAuthList" parameterType="searchSetupVO" resultMap="setup">
+  select a.auth_type,
+		 a.phone_num,
+         a.email,
+         a.type,
+         concat(a.phone_num, a.email) auth_result,
+         a.no
+    from (
+		 select 'phone_num' auth_type,
+				a.phone_num,
+				'' email,
+				a.type,
+                a.no
+		   from (
+				select replace(a.phone_num, '-','') as phone_num,
+					   a.store_id,
+					   '2' type,
+                       a.no
+				  from tb_phone a
+				 where a.store_id = #{store_id}
+				)a    
+		  union 
+		 select 'email' auth_type,
+				'' phone_num, 
+				a.email,
+				a.type,
+				a.no
+		   from (
+				select a.email,
+					   a.store_id,
+					   '2' type,
+                       a.no
+				  from tb_email a
+				 where a.store_id = #{store_id}
+				)a 
+			)a
+	</select>
+		
+	<delete id="setupPhoneNumDel" parameterType="searchSetupVO" >
+	   delete from tb_phone
+	    where no = #{no}
+	</delete>	
+	
+	<delete id="setupEmailDel" parameterType="searchSetupVO" >
+	   delete from tb_email
+	    where no = #{no}
+	</delete>	
+				
+	<insert id="setupPhoneNumAdd" parameterType="searchSetupVO" >
+	insert into tb_phone
+				(
+				 store_id,
+                 phone_num,
+                 created_id,
+                 created_datetime
+                )
+                values
+                (
+                 #{store_id},
+                 #{phone_num},                
+                 #{created_id},                
+                 now()              
+                ) 	
+	</insert>	
+	
+	<insert id="setupEmailAdd" parameterType="searchSetupVO" >
+	insert into tb_email
+				(
+				 store_id,
+                 email,
+                 created_id,
+                 created_datetime
+                )
+                values
+                (
+                 #{store_id},
+                 #{email},                
+                 #{created_id},                
+                 now()              
+                ) 	
+	</insert>	
+					
+	<insert id="setupStoreAdd" parameterType="searchSetupVO" >
+	insert into tb_store
+				(
+				 store_id,
+                 passwd,
+                 ceo,
+                 phone_num,
+                 state,
+                 created_id,
+                 created_datetime,
+				 business_nm,
+	             ceo_birth,
+	             corp_regist_num,
+	             corp_regist_num2,
+	             corp_type,
+	             business_cond,
+	             industry_type,
+	             tel,
+	             fax,
+	             contract_date,
+	             bank_code,
+	             account_num,
+	             hompage,
+	             zip_code,
+	             address,
+	             detail_address,
+	             terminal_id,
+	             imei,
+	             person_nm1,
+	             person_phone1,
+	             person_email1,
+	             person_nm2,
+	             person_phone2,
+	             person_email2,
+	             person_nm3,
+	             person_phone3,
+	             person_email3,
+	             tax,
+	             commission,
+	             period,
+	             settlement_type,
+	             cpid,
+	             paykey                 
+                )
+		select 
+               #{store_id},
+               #{passwd},                
+               #{ceo},                
+               #{phone_num},                
+               #{state},                
+               #{created_id},                
+               now(),   
+			   business_nm,
+               ceo_birth,
+               corp_regist_num,
+               corp_regist_num2,
+               corp_type,
+               business_cond,
+               industry_type,
+               tel,
+               fax,
+               contract_date,
+               bank_code,
+               account_num,
+               hompage,
+               zip_code,
+               address,
+               detail_address,
+               terminal_id,
+               imei,
+               person_nm1,
+               person_phone1,
+               person_email1,
+               person_nm2,
+               person_phone2,
+               person_email2,
+               person_nm3,
+               person_phone3,
+               person_email3,
+               tax,
+               commission,
+               period,
+               settlement_type,
+               cpid,
+               paykey
+          from tb_store 
+		 where store_id = #{created_id}
+		   and state = 'Y' 
+	</insert>		
+	
+	<insert id="setupRoleAdd" parameterType="searchSetupVO" >
+	insert into tb_store_role
+				(
+				 store_id,
+                 role_id
+                )
+                values
+                (
+                 #{store_id},
+                 #{role_id}                
+                ) 	
+	</insert>		
+	
+	<insert id="setupMenuAdd" parameterType="java.util.HashMap" >
+	insert into tb_adm_menu_mapping
+				(
+                menu_id,
+                store_id
+                )
+                values
+                <foreach collection="menu_list" item="item" index="index" open="(" close=")" separator=") , (">
+                  #{item},
+                  #{store_id}
+                </foreach>                
+	</insert>		
+	
+	<update id="setupStoreMod" parameterType="searchSetupVO">
+		update tb_store
+		   set ceo = #{ceo},
+		       phone_num = #{phone_num},
+			   state = #{state},
+			   updated_id = #{updated_id},
+			   updated_datetime = now()
+		 where store_id = #{store_id}
+	</update>	
+		
+	
+	<delete id="setupRoleDel" parameterType="searchSetupVO" >
+	   delete from tb_store_role
+	    where store_id = #{store_id}
+	</delete>	
+	
+	<delete id="setupStoreDel" parameterType="searchSetupVO" >
+	   delete from tb_store
+	    where store_id = #{store_id}
+	</delete>	
+	
+	<delete id="setupMenuDel" parameterType="searchSetupVO" >
+	   delete from tb_adm_menu_mapping
+	    where store_id = #{store_id}
+	</delete>	
+	
+	<delete id="setupPhoneNumDel2" parameterType="searchSetupVO" >
+	   delete from tb_phone
+	    where store_id = #{store_id}
+	</delete>	
+	
+	<delete id="setupEmailDel2" parameterType="searchSetupVO" >
+	   delete from tb_email
+	    where store_id = #{store_id}
+	</delete>	
+	
+	<select id="setupMenuList" parameterType="searchSetupVO" resultMap="setup">
+	select menu_id, 
+           menu_nm, 
+           menu_url 
+	  from tb_menu
+	 where menu_view = 'Y'
+	   and depth = 1
+	 order by no asc
+	</select>
+	
+	<select id="setupMenuList2" parameterType="searchSetupVO" resultMap="setup">
+	select menu_id, 
+           high_menu_id,
+           menu_nm 
+	  from tb_menu
+	 where menu_view = 'Y'
+	   and depth = 2
+       and menu_id != '8001' 
+     order by no asc
+	</select>
+	
+	<select id="setupMenuListCheck" parameterType="searchSetupVO" resultMap="setup">
+	select a.menu_id, 
+           a.high_menu_id,
+           a.menu_nm, 
+           case when a.menu_id = b.menu_id then 'Y'
+           else 'N'
+           end check_yn
+	  from tb_menu a 
+	  left join 
+		   (
+			select menu_id, 
+				   store_id
+              from tb_adm_menu_mapping
+			 where 1 = 1
+			 <if test="store_id != null and store_id != ''">	
+               and store_id = #{store_id}
+             </if>  
+		   )b
+        on a.menu_id = b.menu_id
+	 where 1 = 1
+       and a.menu_view = 'Y'
+       and a.menu_id != '8001' 
+     order by no asc
+	</select>
+	
+	<select id="setupStoreInfo" parameterType="searchSetupVO" resultMap="setup">
+   		    select store_id,
+				   ceo,
+                   phone_num,
+                   state
+              from tb_store
+			 where store_id = #{store_id}
+	</select>
+	
+	<select id="setupMenuInfo" parameterType="searchSetupVO" resultMap="setup">
+	 select a.menu_id,
+            b.high_menu_id,
+			b.menu_nm
+	   from tb_adm_menu_mapping a
+	  inner join tb_menu b
+         on a.menu_id = b.menu_id
+      where a.store_id = #{store_id}
+	</select>
+	
+	<select id="selectSetupList" parameterType="searchSetupVO" resultMap="setup">
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+                   a.state,
+				   a.store_id,
+		 	       replace(a.ceo, substr(a.ceo, 2, 1), '*') ceo,				   
+				   concat(substring(a.phone_num, 1, 9), '****') as phone_num,
+                   a.created_id,
+                   date_format(a.created_datetime, '%Y-%m-%d %h:%i:%s') created_datetime
+              from tb_store a
+             inner join 
+				   (
+					select distinct store_id
+                      from tb_adm_menu_mapping
+                   )b
+                on a.store_id = b.store_id
+			 where (SELECT @ROWNUM:=0)=0 
+			 <if test="ceo != null and ceo != ''">	
+			   and a.ceo like concat('%', #{ceo}, '%')
+			 </if>  			 
+			 order by a.created_datetime desc
+			 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}			 
+	</select>
+
+	
+	<select id="selectSetupListCnt" parameterType="searchSetupVO" resultType="int">
+  		    select count(*) tocnt
+             from tb_store a
+            inner join 
+				   (
+					select distinct store_id
+                      from tb_adm_menu_mapping
+                  )b
+               on a.store_id = b.store_id
+			 <if test="ceo != null and ceo != ''">	
+		      and a.ceo like concat('%', #{ceo}, '%')
+			 </if>
+	</select>
+	
+	<select id="selectSetupIpList" parameterType="searchSetupVO" resultMap="setup">
+	  select a.rownum,
+			 a.no,
+			 a.ip,
+			 a.memo,
+			 a.role_id,
+			 a.use_yn,
+			 a.created_id,
+			 a.created_datetime,
+			 a.updated_id,     
+			 a.updated_datetime
+		from (
+			 select @ROWNUM:=@ROWNUM+1 AS rownum,
+					a.no,
+					a.ip,
+					a.memo,
+					a.role_id,
+					a.use_yn,
+					a.created_id,
+					a.created_datetime,
+					a.updated_id,
+					a.updated_datetime
+			   from (
+					select no,
+						   ip,
+						   memo,
+						   role_id,
+						   use_yn,
+						   created_id,
+						   date_format(created_datetime, '%Y-%m-%d') created_datetime,
+						   updated_id,
+						   updated_datetime
+					  from tb_connect_ip
+					 where 1 = 1
+					<if test="check != null and check != ''">
+				      and role_id = #{check}	
+ 					</if>					  
+					<if test="searchKeyword != null and searchKeyword != ''">
+				      and (memo like concat('%' , #{searchKeyword} , '%') or
+				       	   ip like concat('%' , #{searchKeyword} , '%'))
+ 					</if>					  
+					 )a
+			   where (SELECT @ROWNUM:=0)=0       
+               )a
+		 order by a.role_id desc
+		 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}	               
+	</select>
+	
+	<select id="selectSetupIpListCnt" parameterType="searchSetupVO" resultType="int">
+		select count(*) tocnt
+		  from tb_connect_ip
+		 where 1 = 1
+		<if test="check != null and check != ''">
+	      and role_id = #{check}	
+		</if>					  
+		<if test="searchKeyword != null and searchKeyword != ''">
+	      and (memo like concat('%' , #{searchKeyword} , '%') or
+	       	   ip like concat('%' , #{searchKeyword} , '%'))
+		</if>		  
+	</select>
+
+	<insert id="setupIpAdd" parameterType="searchSetupVO" >
+	insert into tb_connect_ip
+				(
+                ip,
+                memo,
+                role_id,
+                created_id,
+                created_datetime
+                )
+                values
+                (
+                #{ip},
+                #{memo},
+                #{role_id},
+                #{created_id},
+                now()
+                )
+	</insert>	
+	
+	<update id="setupIpMod" parameterType="searchSetupVO">
+		update tb_connect_ip
+		   set ip = #{ip},
+		       memo = #{memo},
+			   role_id = #{role_id},
+			   use_yn = #{use_yn},
+			   updated_id = #{updated_id},
+			   updated_datetime = now()
+		 where no = #{no}
+	</update>	
+		
+	
+	<delete id="setupIpDel" parameterType="searchSetupVO" >
+	   delete from tb_connect_ip
+	    where no = #{no}
+	</delete>	
+
+	<select id="selectSetupCardFeeList" parameterType="searchSetupVO" resultMap="setup"> 
+   		     select a.* from (
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   cardcode,
+                   cardname,
+				   rate,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_card_fee
+			 where (SELECT @ROWNUM:=0)=0 
+			 ) a
+			 order by a.no asc	               
+	</select>
+	
+	<insert id="setupCardFeeAdd" parameterType="searchSetupVO" >
+	insert into tb_card_fee
+				(
+                cardcode,
+                cardname,
+				rate,
+                created_id,
+                created_datetime
+                )
+                values
+                (
+                #{cardcode},
+                #{cardname},
+                #{rate},
+                #{created_id},
+                now()
+                )
+	</insert>
+	
+	<update id="setupCardFeeMod" parameterType="searchSetupVO" >
+		<foreach collection="cardfeeList" item="item" index="index" separator=";">
+			update 
+				tb_card_fee
+			set
+				rate=#{item.rate}
+			where cardcode=#{item.cardcode}
+		</foreach>
+	</update>
+				
+	<delete id="setupCardFeeDel" parameterType="searchSetupVO" >
+	   delete from tb_card_fee
+	    where no = #{no}
+	</delete>
+	
+	<select id="selectSetupPgFeeList" parameterType="searchSetupVO" resultMap="setup"> 
+   		    select distinct pgname
+              from tb_pg_fee
+			 where (SELECT @ROWNUM:=0)=0                
+	</select>
+	
+	<select id="selectSetupPgFeeListDetail" parameterType="searchSetupVO" resultMap="setup"> 
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   pgcode,
+                   pgname,
+				    creditcard_RT,	
+				    creditcardK_RT,	
+				    cellphone_RT,	
+					cellphonePay_RT,	
+					ARS700_RT,		
+					phonebill_RT,	
+					accountTRF_RT,	
+					vaccountTRF_RT,	
+					CMS_RT,		
+					giftvoucher_RT,	
+					sgiftvoucher_RT,	
+					bgiftvoucher_RT,	
+					hgiftvoucher_RT,	
+					eggmony_RT,	
+					teencash_RT,	
+					tmoney_RT,		
+					mobilepop_RT,	
+					alipay_RT,		
+					kakaopay_RT,	
+					terminal_RT,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_pg_fee
+			 where (SELECT @ROWNUM:=0)=0 
+			 and   pgname = #{pgname}
+			 order by no desc           
+	</select>
+	
+	<insert id="setupPgFeeAdd" parameterType="searchSetupVO" >
+	insert into tb_pg_fee
+				(
+				pgcode,
+				pgname,
+				creditcard_RT,	
+				creditcardK_RT,	
+				cellphone_RT,	
+				cellphonePay_RT,	
+				ARS700_RT,		
+				phonebill_RT,	
+				accountTRF_RT,	
+				vaccountTRF_RT,	
+				CMS_RT,		
+				giftvoucher_RT,	
+				sgiftvoucher_RT,	
+				bgiftvoucher_RT,	
+				hgiftvoucher_RT,	
+				eggmony_RT,	
+				teencash_RT,	
+				tmoney_RT,		
+				mobilepop_RT,	
+				alipay_RT,		
+				kakaopay_RT,	
+				terminal_RT,	
+				created_id,
+				created_datetime
+                )
+                values
+                (
+                '',
+                #{pgname},
+				'1.0',
+				'1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                '1.0',
+                #{created_id},
+                now()
+                )
+	</insert>	
+	
+	<update id="setupPgFeeMod" parameterType="searchSetupVO">
+		update tb_pg_fee
+		   set 
+				creditcard_RT=#{creditcard_RT},
+				creditcardK_RT=#{creditcardK_RT},
+				cellphone_RT=#{cellphone_RT},
+				cellphonePay_RT=#{cellphonePay_RT},
+				ARS700_RT=#{ARS700_RT},
+				phonebill_RT=#{phonebill_RT},
+				accountTRF_RT=#{accountTRF_RT},
+				vaccountTRF_RT=#{vaccountTRF_RT},
+				CMS_RT=#{CMS_RT},
+				giftvoucher_RT=#{giftvoucher_RT},
+				sgiftvoucher_RT=#{sgiftvoucher_RT},
+				bgiftvoucher_RT=#{bgiftvoucher_RT},
+				hgiftvoucher_RT=#{hgiftvoucher_RT},
+				eggmony_RT=#{eggmony_RT},
+				teencash_RT=#{teencash_RT},
+				tmoney_RT=#{tmoney_RT},
+				mobilepop_RT=#{mobilepop_RT},
+				alipay_RT=#{alipay_RT},
+				kakaopay_RT=#{kakaopay_RT},
+				terminal_RT=#{terminal_RT},
+	            updated_id = #{updated_id},
+	            updated_datetime = now()
+		 where pgname = #{pgname}
+	</update>		
+	
+	<select id="selectSetupPgFeeList1" parameterType="searchSetupVO" resultMap="setup"> 
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   pgcode,
+                   pgname,
+                   pgway,
+				   rate,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_pg_fee
+			 where (SELECT @ROWNUM:=0)=0 
+			 order by no desc	               
+	</select>
+	
+	<select id="selectMenu" parameterType="Map" resultType="java.util.HashMap">
+		select c.menu_id,
+	           c.high_menu_id,
+	           c.menu_nm,
+	           c.depth,
+	           c.menu_url
+	      from tb_menu c
+	     where c.menu_view = 'Y'
+	       and c.depth = 1
+	     order by c.no asc 
+    </select>
+    
+    <select id="selectSubMenu" parameterType="Map" resultType="java.util.HashMap">
+		select c.menu_id,
+	           c.high_menu_id,
+	           c.menu_nm,
+	           c.depth,
+	           c.menu_url
+	      from tb_menu c
+	     where c.menu_view = 'Y'
+	       and c.depth = 2
+	     order by c.no asc 
+    </select>
+    
+    <select id="selectMenuMapping" parameterType="Map" resultType="java.util.HashMap">
+		select menu_id, role_id, permission_yn
+	    from tb_menu_mapping
+    </select>
+</mapper>

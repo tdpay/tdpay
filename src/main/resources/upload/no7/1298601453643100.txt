@@ -1,0 +1,41 @@
+메인 - 로그인 - 다른 이메일 주소 등록 - 인증번호 발송 버튼 누르면 메일링 링크 추가되었습니다.
+메인 - 비번찾기 - 인증번호 발송 버튼 누르면 메일링 링크 추가
+메인 - 비번찾기 - 조회 - 비밀번호 변경 팝업 노출
+관리자화면(헤더공통) - 상단 비밀번호 변경 - 비밀번호 팝업 노출 - 조회 클릭시 비밀번호 변경 팝업 추가
+정보수정페이지 추가
+
+---------------------------- 웹
+
+[본사]
+로그인페이지 - http://gmgadmin.cafe24.com/ -- 기능추가
+
+[총판]
+로그인페이지 - http://gmgadmin.cafe24.com/DistiAdmin/ -- 기능추가
+정보수정페이지 - http://gmgadmin.cafe24.com/DistiAdmin/mypage/mypage_info.jsp
+
+[대리점]
+로그인페이지 - http://gmgadmin.cafe24.com/FrchsAdmin/ -- 기능추가
+정보수정페이지 - http://gmgadmin.cafe24.com/FrchsAdmin/mypage/mypage_info.jsp
+
+[가맹점]
+로그인페이지 - http://gmgadmin.cafe24.com/StoreAdmin/ -- 기능추가
+정보수정페이지 - http://gmgadmin.cafe24.com/StoreAdmin/mypage/mypage_info.jsp
+
+
+
+------------------------------ 모바일
+
+[본사]
+로그인페이지 - http://gmgadmin.cafe24.com/app -- 기능추가
+
+[총판]
+로그인페이지 - http://gmgadmin.cafe24.com/DistiAdmin/app -- 기능추가
+정보수정페이지 - http://gmgadmin.cafe24.com/DistiAdmin/app/mypage/mypage_info.jsp
+
+[대리점]
+로그인페이지 - http://gmgadmin.cafe24.com/FrchsAdmin/app -- 기능추가
+정보수정페이지 - http://gmgadmin.cafe24.com/FrchsAdmin/app/mypage/mypage_info.jsp
+
+[가맹점]
+로그인페이지 - http://gmgadmin.cafe24.com/StoreAdmin/app -- 기능추가
+정보수정페이지 - http://gmgadmin.cafe24.com/StoreAdmin/app/mypage/mypage_info.jsp

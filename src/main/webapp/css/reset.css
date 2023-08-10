@@ -1,0 +1,74 @@
+@charset "utf-8";
+/* /// font /// */
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,500,700,900&display=swap&subset=korean');
+@import url('https://fonts.googleapis.com/css?family=Nanum+Myeongjo:400,700,800&display=swap&subset=korean');
+
+/* /// common /// */
+* {
+    padding:0;
+    margin:0;  
+    font-family:'돋움','dotum','Noto Sans KR', sans-serif;
+    font-size:100%;
+    letter-spacing: -0.04em;
+    color: #252525;
+	-webkit-text-size-adjust: none
+}
+body,b,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,
+table,th,tr,td,thead,tbody,form,fieldset,legend,input,textarea,button{
+    margin:0;
+    padding:0;
+	line-height: 1;
+    letter-spacing: -0.04em;
+    font-family:'돋움','dotum','Noto Sans KR', sans-serif;
+}
+ul,ol,li,dl,dt,dd {list-style:none;}
+i,em,address{font-style:normal;}
+label,button{cursor:pointer;}
+button{border:none;background: none;}
+input, select, textarea {
+    -webkit-border-radius: 0;
+    appearance: none; 
+	-webkit-appearance: none; 
+	-webkit-appearance: none;
+	-moz-appearance: none;  
+    border-radius:0; 
+    height:26px;
+    padding:0 10px;
+    font-size:12px;
+    border:1px solid #dddddd;
+    box-sizing:border-box;
+}
+select { 
+    background:url('../img/ico/ico_select.png') no-repeat right 10px center; padding-right:20px; }
+select::-ms-expand { display: none; }
+img{max-width: 100%;}
+textarea{padding:8px; resize:none;}
+textarea, button {
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+}
+input, textarea, button, select {
+    -webkit-border-radius:0;
+    -moz-border-radius:0;
+    -o-border-radius:0;
+    border-radius:0;
+}
+table{border:none; border-collapse:collapse; padding:0; }
+caption {display:none;}
+fieldset{min-width:100%;}
+a:link,a:visited,a:active,a:focus{text-decoration:none;}
+a:hover{text-decoration:none;}
+
+input[type=text]::-ms-clear{display:none;}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="tel"]{border-color:#ddd;}
+input[type="text"]:hover,input[type="text"]:focus,
+input[type="password"]:hover,input[type="password"]:focus,
+input[type="email"]:hover,input[type="email"]:focus,
+input[type="number"]:hover,input[type="number"]:focus,
+input[type="tel"]:hover,input[type="tel"]:focus{outline:none;}
+select:hover, select:focus {outline:none;}

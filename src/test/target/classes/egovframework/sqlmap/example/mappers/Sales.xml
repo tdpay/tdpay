@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.sales.service.impl.SalesMapper">
+
+	<resultMap id="sales" type="egovframework.example.sales.service.SalesVO">
+		<result property="rate" column="rate"/>
+		<result property="total_approval" column="total_approval"/>
+		<result property="total_cancel_sum" column="total_cancel_sum"/>
+	</resultMap>
+	
+		
+	<select id="selectCreditcardK" parameterType="searchSalesVO" resultMap="sales">
+		select 
+			ifnull(sum(a.amount) + sum(ifnull(a.cancel_amount, 0)),0) total_approval
+			, ifnull(sum(ifnull(a.cancel_amount, 0)),0) total_cancel_sum
+			,(select creditcardK_RT from tb_pg_fee where no=#{cp_type}) as rate
+		from 
+			(
+			select 
+				a.cpid
+				, a.commission
+				, e.authdate
+				, e.created_datetime
+				, e.amount
+				, e.cancel_amount
+			from tb_store a
+			inner join tb_store_role b
+				on a.store_id = b.store_id
+				and b.role_id = '1004'
+				and a.state = 'Y'
+				and a.cpid is not null
+				and a.cpid != ''
+			inner join 
+				(
+				select 
+					a.store_id as store_id3,
+					a.high_store_id as high_store_id3,
+					a.business_nm as business_nm3,
+					a.commission as commission3,
+					a.bank_code
+				from tb_store a
+				inner join tb_store_role b
+					on a.store_id = b.store_id
+					and b.role_id = '1003'
+					and a.state = 'Y' 
+				)c
+				on a.high_store_id = c.store_id3
+			inner join 
+				(
+				select 
+					a.store_id as store_id2,
+					a.high_store_id as high_store_id2,
+					a.business_nm as business_nm2,
+					a.commission as commission2
+				from tb_store a
+				inner join tb_store_role b
+					on a.store_id = b.store_id
+					and b.role_id = '1002'
+					and a.state = 'Y'	 
+				)d
+				on c.high_store_id3 = d.store_id2
+			inner join 
+				(
+				select 
+					a.authdate
+					, a.amount
+					, a.cpid
+					, '1' cp_type
+					, a.daoutrx
+					, b.amount as cancel_amount
+					, b.created_datetime
+					, a.paymenttype
+				from tb_card_auth a
+				left join tb_card_cancel b
+					on b.daoutrx = a.daoutrx
+					and b.cpid = a.cpid
+				where a.resultcode = '0000'
+				union
+				select 
+					a.authdate
+					, a.amount
+					, a.cpid
+					, '2' cp_type
+					, a.daoutrx
+					, b.amount as cancel_amount
+					, b.created_datetime
+					, a.paymenttype
+				from tb_card_auth2 a
+				left join tb_card_cancel b
+					on b.daoutrx = a.daoutrx
+					and b.cpid = a.cpid
+				where a.resultcode = '0000'
+				union
+					select 
+						a.settdate authdate
+						, a.amount
+						, a.cpid
+						, '1' cp_type
+						, a.daoutrx
+						, b.amount as cancel_amount
+						, b.created_datetime
+						, a.paymenttype
+					from tb_pay_notice a
+					left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+						and b.cpid = a.cpid
+				)e 
+				on a.cpid = e.cpid
+				<if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+				and (
+					DATE_FORMAT(e.created_datetime, '%Y-%m-%d') BETWEEN #{start_datetime} AND #{end_datetime}
+					or
+					DATE_FORMAT(DATE_ADD(e.authdate, INTERVAL a.period DAY), '%Y-%m-%d') BETWEEN #{start_datetime} AND #{end_datetime}
+				)
+				</if>
+				and e.cp_type = #{cp_type}
+				and IFNULL(e.paymenttype, '') != '3'
+			)a
+	</select>
+	
+	<select id="selectTerminal" parameterType="searchSalesVO" resultMap="sales">
+	select 
+			sum(a.amount) + sum(ifnull(a.cancel_amount, 0)) total_approval
+			, sum(ifnull(a.cancel_amount, 0)) total_cancel_sum
+			,(select terminal_RT from tb_pg_fee where no=#{cp_type}) as rate
+		from 
+			(
+			select 
+				a.cpid
+				, a.commission
+				, e.authdate
+				, e.created_datetime
+				, e.amount
+				, e.cancel_amount
+			from tb_store a
+			inner join tb_store_role b
+				on a.store_id = b.store_id
+				and b.role_id = '1004'
+				and a.state = 'Y'
+				and a.cpid is not null
+				and a.cpid != ''
+			inner join 
+				(
+				select 
+					a.store_id as store_id3,
+					a.high_store_id as high_store_id3,
+					a.business_nm as business_nm3,
+					a.commission as commission3,
+					a.bank_code
+				from tb_store a
+				inner join tb_store_role b
+					on a.store_id = b.store_id
+					and b.role_id = '1003'
+					and a.state = 'Y'
+				)c
+				on a.high_store_id = c.store_id3
+			inner join 
+				(
+				select 
+					a.store_id as store_id2,
+					a.high_store_id as high_store_id2,
+					a.business_nm as business_nm2,
+					a.commission as commission2
+				from tb_store a
+				inner join tb_store_role b
+					on a.store_id = b.store_id
+					and b.role_id = '1002'
+					and a.state = 'Y' 
+				)d
+				on c.high_store_id3 = d.store_id2
+			inner join 
+				(
+				select 
+					a.authdate
+					, a.amount
+					, a.cpid
+					, '1' cp_type
+					, a.daoutrx
+					, b.amount as cancel_amount
+					, b.created_datetime
+					, a.paymenttype
+				from tb_card_auth a
+				left join tb_card_cancel b
+					on b.daoutrx = a.daoutrx
+					and b.cpid = a.cpid
+				where a.resultcode = '0000'
+				union
+				select 
+					a.authdate
+					, a.amount
+					, a.cpid
+					, '2' cp_type
+					, a.daoutrx
+					, b.amount as cancel_amount
+					, b.created_datetime
+					, a.paymenttype
+				from tb_card_auth2 a
+				left join tb_card_cancel b
+					on b.daoutrx = a.daoutrx
+					and b.cpid = a.cpid
+				where a.resultcode = '0000'
+				union
+					select 
+						a.settdate authdate
+						, a.amount
+						, a.cpid
+						, '1' cp_type
+						, a.daoutrx
+						, b.amount as cancel_amount
+						, b.created_datetime
+						, a.paymenttype
+					from tb_pay_notice a
+					left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+						and b.cpid = a.cpid
+				)e 
+				on a.cpid = e.cpid
+				<if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+				and (
+					DATE_FORMAT(e.created_datetime, '%Y-%m-%d') BETWEEN #{start_datetime} AND #{end_datetime}
+					or
+					DATE_FORMAT(DATE_ADD(e.authdate, INTERVAL a.period DAY), '%Y-%m-%d') BETWEEN #{start_datetime} AND #{end_datetime}
+				)
+				</if>
+				and e.cp_type = #{cp_type}
+				and IFNULL(e.paymenttype, '') = '3'
+			)a
+	</select>
+</mapper>

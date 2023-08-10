@@ -1,0 +1,1158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.manage2.service.impl.Manage2Mapper">
+
+	<resultMap id="manage2" type="egovframework.example.manage2.service.Manage2VO">
+		<result property="rownum" column="rownum"/>
+		<result property="role_id" column="role_id"/>
+		<result property="store_id" column="store_id"/>
+		<result property="high_store_id" column="high_store_id"/>
+		<result property="high_store_id2" column="high_store_id2"/>
+		<result property="passwd" column="passwd"/>
+		<result property="business_nm" column="business_nm"/>
+		<result property="business_nm2" column="business_nm2"/>
+		<result property="business_nm3" column="business_nm3"/>
+		<result property="high_business_nm" column="high_business_nm"/>
+		<result property="high_business_nm2" column="high_business_nm2"/>
+		<result property="ceo" column="ceo"/>
+		<result property="ceo_birth" column="ceo_birth"/>
+		<result property="corp_regist_num" column="corp_regist_num"/>
+		<result property="corp_regist_num2" column="corp_regist_num2"/>
+		<result property="corp_type" column="corp_type"/>
+		<result property="business_cond" column="business_cond"/>
+		<result property="industry_type" column="industry_type"/>
+		<result property="tel" column="tel"/>
+		<result property="fax" column="fax"/>
+		<result property="phone_num" column="phone_num"/>
+		<result property="email" column="email"/>
+		<result property="contract_date" column="contract_date"/>
+		<result property="bank_code" column="bank_code"/>
+		<result property="bank_nm" column="bank_nm"/>
+		<result property="account_num" column="account_num"/>
+		<result property="accounter" column="accounter"/>
+		<result property="state" column="state"/>
+		<result property="hompage" column="hompage"/>
+		<result property="zip_code" column="zip_code"/>
+		<result property="address" column="address"/>
+		<result property="detail_address" column="detail_address"/>
+		<result property="cpid" column="cpid"/>
+		<result property="terminal_id" column="terminal_id"/>
+		<result property="imei" column="imei"/>
+		<result property="person_nm1" column="person_nm1"/>
+		<result property="person_phone1" column="person_phone1"/>
+		<result property="person_email1" column="person_email1"/>
+		<result property="person_nm2" column="person_nm2"/>
+		<result property="person_phone2" column="person_phone2"/>
+		<result property="person_email2" column="person_email2"/>
+		<result property="person_nm3" column="person_nm3"/>
+		<result property="person_phone3" column="person_phone3"/>
+		<result property="person_email3" column="person_email3"/> 
+		<result property="commission" column="commission"/>
+		<result property="period" column="period"/>
+		<result property="tax" column="tax"/>
+		<result property="deposit" column="deposit"/>
+		<result property="itg_limitset" column="itg_limitset"/>
+		<result property="settlement_type" column="settlement_type"/>
+		<result property="created_id" column="created_id"/>
+		<result property="created_datetime" column="created_datetime"/>
+		<result property="updated_id" column="updated_id"/>
+		<result property="updated_datetime" column="updated_datetime"/>
+		<result property="credit_card_k" column="credit_card_k"/>
+		<result property="credit_card" column="credit_card"/>
+		<result property="terminal" column="terminal"/>
+		<result property="virtual_account" column="virtual_account"/>
+		<result property="gift_voucher" column="gift_voucher"/>
+		<result property="smart_gift_voucher" column="smart_gift_voucher"/>
+		<result property="book_gift_voucher" column="book_gift_voucher"/>
+		<result property="account_transfer" column="account_transfer"/>
+		<result property="daily_transaction_limit" column="daily_transaction_limit"/>
+		<result property="monthly_transaction_limit" column="monthly_transaction_limit"/>
+		<result property="samecard_daily_limit" column="samecard_daily_limit"/>
+		<result property="transaction_limit" column="transaction_limit"/>
+		<result property="samecard_daily_approvals" column="samecard_daily_approvals"/>
+		<result property="installment_months" column="installment_months"/>
+		<result property="payment_device" column="payment_device"/>
+		
+	</resultMap>
+	
+	<select id="selectManage2List" parameterType="searchManage2VO" resultMap="manage2">
+		    select a.rownum,
+				   a.store_id,
+				   a.high_store_id,
+				   a.passwd,
+				   a.business_nm,
+				   a.business_nm2,
+				   a.business_nm3,
+				   a.ceo,
+				   a.ceo_birth,
+				   a.corp_regist_num,
+				   a.corp_regist_num2,
+				   a.corp_type,
+				   a.business_cond,
+				   a.industry_type,
+				   a.tel,
+				   a.fax,
+				   a.phone_num,
+				   a.email,
+				   a.contract_date,
+				   a.bank_code,
+				   a.account_num,
+				   a.state,
+				   a.hompage,
+				   a.zip_code,
+				   a.address,
+				   a.detail_address,
+				   a.cpid,
+				   a.terminal_id,
+				   a.imei,
+				   a.person_nm1,
+				   a.person_phone1,
+				   a.person_email1,
+				   a.person_nm2,
+				   a.person_phone2,
+				   a.person_email2,
+				   a.person_nm3,
+				   a.person_phone3,
+				   a.person_email3,
+				   a.commission,
+				   a.period,
+				   a.itg_limitset,
+				   a.tax,	
+				   a.deposit,		
+			 	   a.created_id,   
+				   date_format(a.created_datetime, '%Y.%m.%d') created_datetime,    
+				   a.updated_id,   
+				   a.updated_datetime,
+				   a.credit_card_k,
+				   a.credit_card,
+				   a.terminal,
+				   a.account_transfer,
+				   a.virtual_account,
+				   a.gift_voucher,
+				   a.smart_gift_voucher,
+				   a.book_gift_voucher,
+				   a.payment_device
+              from (	
+				   select @ROWNUM:=@ROWNUM+1 AS rownum,
+						  a.store_id,
+						  a.high_store_id,
+						  a.passwd,
+						  a.business_nm,
+						  a.business_nm2,
+						  a.business_nm3,
+						  a.ceo,
+						  a.ceo_birth,
+						  a.corp_regist_num,
+						  a.corp_regist_num2,
+						  a.corp_type,
+						  a.business_cond,
+						  a.industry_type,
+						  a.tel,
+						  a.fax,
+						  a.phone_num,
+						  a.email,
+						  a.contract_date,
+						  a.bank_code,
+						  a.account_num,
+						  a.state,
+						  a.hompage,
+						  a.zip_code,
+						  a.address,
+						  a.detail_address,
+						  a.cpid,
+						  a.terminal_id,
+						  a.imei,
+						  a.person_nm1,
+						  a.person_phone1,
+						  a.person_email1,
+						  a.person_nm2,
+						  a.person_phone2,
+						  a.person_email2,
+						  a.person_nm3,
+						  a.person_phone3,
+						  a.person_email3,
+						  a.commission,
+						  a.period,
+						  a.itg_limitset,
+						  a.tax,	
+						  a.deposit,			
+					 	  a.created_id,   
+						  date_format(a.created_datetime, '%Y.%m.%d') created_datetime,    
+						  a.updated_id,   
+						  a.updated_datetime,
+						   a.credit_card_k,
+						   a.credit_card,
+						   a.terminal,
+						   a.account_transfer,
+						   a.virtual_account,
+						   a.gift_voucher,
+						   a.smart_gift_voucher,
+						   a.book_gift_voucher,
+						   a.payment_device
+		             from (
+						  select a.store_id,
+								 a.high_store_id,
+								 a.passwd,
+								 a.business_nm,
+		                         b.business_nm as business_nm2,
+		                         c.business_nm as business_nm3,
+								 a.ceo,
+								 a.ceo_birth,
+								 a.corp_regist_num,
+								 a.corp_regist_num2,
+								 a.corp_type,
+								 a.business_cond,
+								 a.industry_type,
+								 a.tel,
+								 a.fax,
+								 a.phone_num,
+								 a.email,
+								 a.contract_date,
+								 a.bank_code,
+								 a.account_num,
+								 a.state,
+								 a.hompage,
+								 a.zip_code,
+								 a.address,
+								 a.detail_address,
+								 a.cpid,
+								 a.terminal_id,
+								 a.imei,
+								 a.person_nm1,
+								 a.person_phone1,
+								 a.person_email1,
+								 a.person_nm2,
+								 a.person_phone2,
+								 a.person_email2,
+								 a.person_nm3,
+								 a.person_phone3,
+								 a.person_email3,
+								 a.commission,
+								 a.period,
+								 a.itg_limitset,
+								 a.tax,	
+								 a.deposit,			
+								 a.created_id,   
+								 date_format(a.created_datetime, '%Y.%m.%d') created_datetime,    
+								 a.updated_id,   
+						 	 	 a.updated_datetime,
+								   a.credit_card_k,
+								   a.credit_card,
+								   a.terminal,
+								   a.account_transfer,
+								   a.virtual_account,
+								   a.gift_voucher,
+								   a.smart_gift_voucher,
+								   a.book_gift_voucher,
+								   a.payment_device
+							from (
+								 select a.store_id,
+										a.high_store_id,
+										a.passwd,
+										a.business_nm,
+										a.ceo,
+										a.ceo_birth,
+										a.corp_regist_num,
+										a.corp_regist_num2,
+										a.corp_type,
+										a.business_cond,
+										a.industry_type,
+										a.tel,
+										a.fax,
+										a.phone_num,
+										a.email,
+										a.contract_date,
+										a.bank_code,
+										a.account_num,
+										a.state,
+										a.hompage,
+										a.zip_code,
+										a.address,
+										a.detail_address,
+										a.cpid,
+										a.terminal_id,
+										a.imei,
+										a.person_nm1,
+										a.person_phone1,
+										a.person_email1,
+										a.person_nm2,
+										a.person_phone2,
+										a.person_email2,
+										a.person_nm3,
+										a.person_phone3,
+										a.person_email3,
+										a.commission,
+										a.period,
+										a.itg_limitset,
+										a.tax,
+										a.deposit,
+										a.created_id,   
+										date_format(a.created_datetime, '%Y.%m.%d') created_datetime,    
+										a.updated_id,   
+										a.updated_datetime,
+										   a.credit_card_k,
+										   a.credit_card,
+										   a.terminal,
+										   a.account_transfer,
+										   a.virtual_account,
+										   a.gift_voucher,
+										   a.smart_gift_voucher,
+										   a.book_gift_voucher,
+										   a.payment_device
+								   from tb_store a
+								  inner join tb_store_role b
+									 on a.store_id = b.store_id
+									and b.role_id = '1004'        
+							  	    <if test="store_id != null and store_id != ''">
+									and a.store_id = #{store_id}
+									</if>										  
+							  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+									and a.high_store_id = #{high_store_id2}
+									</if>										
+							   	    <if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+									and date(a.created_datetime) BETWEEN #{start_datetime} AND #{end_datetime}
+									</if>
+									
+							   	    <if test="business_nm != null and business_nm != ''">
+									and a.business_nm like concat('%', #{business_nm}, '%')
+									</if>
+							   	    <if test="tel != null and tel != ''">
+									and a.tel like concat('%', #{tel}, '%')
+									</if>
+									<if test="searchKeyword1 != null and searchKeyword1 != ''">
+								        <choose>
+								            <when test="searchKeyword1 == 'total' and email != null and email != ''">
+												and	concat(a.email, a.person_email1, a.person_email2, a.person_email3) like concat('%' , #{email} , '%')
+											</when>							        
+								            <when test="searchKeyword1 == 'email'">
+												and	a.email like concat('%' , #{email} , '%')
+											</when>
+								            <when test="searchKeyword1 == 'person_email1'">
+												and	a.person_email1 like concat('%' , #{email} , '%')
+											</when>
+								            <when test="searchKeyword1 == 'person_email2'">
+												and	a.person_email2 like concat('%' , #{email} , '%')
+											</when>
+								            <when test="searchKeyword1 == 'person_email3'">
+												and	a.person_email3 like concat('%' , #{email} , '%')
+											</when>
+										</choose>
+									</if>
+									<if test="searchKeyword2 != null and searchKeyword2 != ''">
+								        <choose>
+								            <when test="searchKeyword2 == 'total' and phone_num != null and phone_num != ''">
+												and	concat(a.phone_num, a.person_phone1, a.person_phone2, a.person_phone3) like concat('%' , #{phone_num} , '%')
+											</when>							        
+								            <when test="searchKeyword2 == 'phone_num'">
+												and	a.phone_num like concat('%' , #{phone_num} , '%')
+											</when>
+								            <when test="searchKeyword2 == 'person_phone1'">
+												and	a.person_phone1 like concat('%' , #{phone_num} , '%')
+											</when>
+								            <when test="searchKeyword2 == 'person_phone2'">
+												and	a.person_phone2 like concat('%' , #{phone_num} , '%')
+											</when>
+								            <when test="searchKeyword2 == 'person_phone3'">
+												and	a.person_phone3 like concat('%' , #{phone_num} , '%')
+											</when>
+										</choose>
+									</if>
+									<if test="searchKeyword != null and searchKeyword != ''">
+								        <choose>
+								            <when test="searchKeyword == 'ceo'">
+												and	a.ceo like concat('%' , #{person_nm} , '%')
+											</when>
+								            <when test="searchKeyword == 'person_nm'">
+												and	a.person_nm1 like concat('%' , #{person_nm} , '%')
+											</when>
+										</choose>
+									</if>
+									<if test="search_id != null and search_id != '' and search_nm != null and search_nm != ''">
+								        <choose>
+								            <when test="search_id == 'cpid'">
+												and	a.cpid like concat('%' , #{search_nm} , '%')
+											</when>
+								            <when test="search_id == 'terminal_id'">
+												and	a.terminal_id like concat('%' , #{search_nm} , '%')
+											</when>
+								            <when test="search_id == 'imei'">
+												and	a.imei like concat('%' , #{search_nm} , '%')
+											</when>
+										</choose>
+									</if>	
+							   	    <if test="state != null and state != ''">
+									and a.state = #{state}
+									</if>							 					                
+							   	    <if test="commission != null and commission != ''">
+									and a.commission = #{commission}
+									</if>							 					                
+							   	    <if test="tax != null and tax != ''">
+									and a.tax = #{tax}
+									</if>							 					                
+							   	    <if test="period != null and period != ''">
+									and a.period = #{period}
+									</if>							 					                
+		                         )a inner join 
+		                         (
+								 select a.store_id,
+										a.high_store_id,
+										a.business_nm
+								   from tb_store a
+								  inner join tb_store_role b
+									 on a.store_id = b.store_id
+									and b.role_id = '1003'    	
+							  	    <if test="high_store_id != null and high_store_id != ''">
+									and a.high_store_id = #{high_store_id}
+									</if>										
+							  	    <if test="roleStore2 != null and roleStore2 != '' and roleStore2 != '선택'">
+									and a.store_id = #{roleStore2}
+									</if>									
+		                         )b
+							  on a.high_store_id = b.store_id
+							inner join 
+		                         (
+								 select a.store_id,
+										a.high_store_id,
+										a.business_nm 
+								   from tb_store a
+								  inner join tb_store_role b
+									 on a.store_id = b.store_id
+									and b.role_id = '1002'         
+							  	    <if test="roleStore != null and roleStore != ''">
+									and a.store_id = #{roleStore}
+									</if>								                   
+		                         )c
+							  on b.high_store_id = c.store_id              
+						   order by case when #{order_no} = '1' then (	
+										case #{order_id} when 'store_id' then a.store_id 
+													    when 'business_nm' then a.business_nm 
+                                                        when 'created_datetime' then a.created_datetime 
+                                                        when 'corp_regist_num' then a.corp_regist_num 
+                                                        when 'business_nm3' then c.business_nm 
+                                                        when 'business_nm2' then b.business_nm 
+                                                        when 'cpid' then a.cpid 
+                                                        when 'terminal_id' then a.terminal_id 
+                                                        when 'imei' then a.imei 
+                                                        when 'tel' then a.tel 
+                                                        when 'commission' then a.commission 
+                                                        when 'tax' then a.tax
+                                                        when 'period' then a.period
+                                                        when 'state' then a.state
+                                                    end       
+										)END ASC,
+									case when #{order_no} = '2' then (	
+										case #{order_id} when 'store_id' then a.store_id 
+													    when 'business_nm' then a.business_nm 
+                                                        when 'created_datetime' then a.created_datetime 
+                                                        when 'corp_regist_num' then a.corp_regist_num 
+                                                        when 'business_nm3' then c.business_nm 
+                                                        when 'business_nm2' then b.business_nm 
+                                                        when 'cpid' then a.cpid 
+                                                        when 'terminal_id' then a.terminal_id 
+                                                        when 'imei' then a.imei 
+                                                        when 'tel' then a.tel 
+                                                        when 'commission' then a.commission 
+                                                        when 'tax' then a.tax 
+                                                        when 'period' then a.period
+                                                        when 'state' then a.state
+												    end 
+										)END DESC	                     
+		                  )a 
+		                  left join tb_store_commission c
+		                  	on c.store_id = a.store_id and c.active = TRUE
+		            where (SELECT @ROWNUM:=0)=0    	
+		            order by a.created_datetime desc
+		          )a 
+	        LIMIT #{recordCountPerPage} OFFSET #{firstIndex}	         
+	</select>
+	
+	<select id="selectManage2ListToCnt" parameterType="searchManage2VO" resultType="int">
+				   select count(*) tocnt 
+					 from (
+						 select a.store_id,
+								a.high_store_id  
+						   from tb_store a
+						  inner join tb_store_role b
+							 on a.store_id = b.store_id
+							and b.role_id = '1004'   
+					  	    <if test="store_id != null and store_id != ''">
+							and a.store_id = #{store_id}
+							</if>								
+							<if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+							and date(a.created_datetime) BETWEEN #{start_datetime} AND #{end_datetime}
+							</if>
+							
+					   	    <if test="business_nm != null and business_nm != ''">
+							and a.business_nm like concat('%', #{business_nm}, '%')
+							</if>
+					   	    <if test="tel != null and tel != ''">
+							and a.tel like concat('%', #{tel}, '%')
+							</if>
+							<if test="searchKeyword1 != null and searchKeyword1 != ''">
+						        <choose>
+						            <when test="searchKeyword1 == 'total' and email != null and email != ''">
+										and	concat(a.email, a.person_email1, a.person_email2, a.person_email3) like concat('%' , #{email} , '%')
+									</when>							        
+						            <when test="searchKeyword1 == 'email'">
+										and	a.email like concat('%' , #{email} , '%')
+									</when>
+						            <when test="searchKeyword1 == 'person_email1'">
+										and	a.person_email1 like concat('%' , #{email} , '%')
+									</when>
+						            <when test="searchKeyword1 == 'person_email2'">
+										and	a.person_email2 like concat('%' , #{email} , '%')
+									</when>
+						            <when test="searchKeyword1 == 'person_email3'">
+										and	a.person_email3 like concat('%' , #{email} , '%')
+									</when>
+								</choose>
+							</if>
+							<if test="searchKeyword2 != null and searchKeyword2 != ''">
+						        <choose>
+						            <when test="searchKeyword2 == 'total' and phone_num != null and phone_num != ''">
+										and	concat(a.phone_num, a.person_phone1, a.person_phone2, a.person_phone3) like concat('%' , #{phone_num} , '%')
+									</when>							        
+						            <when test="searchKeyword2 == 'phone_num'">
+										and	a.phone_num like concat('%' , #{phone_num} , '%')
+									</when>
+						            <when test="searchKeyword2 == 'person_phone1'">
+										and	a.person_phone1 like concat('%' , #{phone_num} , '%')
+									</when>
+						            <when test="searchKeyword2 == 'person_phone2'">
+										and	a.person_phone2 like concat('%' , #{phone_num} , '%')
+									</when>
+						            <when test="searchKeyword2 == 'person_phone3'">
+										and	a.person_phone3 like concat('%' , #{phone_num} , '%')
+									</when>
+								</choose>
+							</if>
+							<if test="searchKeyword != null and searchKeyword != ''">
+						        <choose>
+						            <when test="searchKeyword == 'ceo'">
+										and	a.ceo like concat('%' , #{person_nm} , '%')
+									</when>
+						            <when test="searchKeyword == 'person_nm'">
+										and	a.person_nm1 like concat('%' , #{person_nm} , '%')
+									</when>
+								</choose>
+							</if>
+
+							<if test="search_id != null and search_id != '' and search_nm != null and search_nm != ''">
+						        <choose>
+						            <when test="search_id == 'cpid'">
+										and	a.cpid like concat('%' , #{search_nm} , '%')
+									</when>
+						            <when test="search_id == 'terminal_id'">
+										and	a.terminal_id like concat('%' , #{search_nm} , '%')
+									</when>
+						            <when test="search_id == 'imei'">
+										and	a.imei like concat('%' , #{search_nm} , '%')
+									</when>
+								</choose>
+							</if>								
+					   	    <if test="state != null and state != ''">
+							and a.state = #{state}
+							</if>		
+					   	    <if test="commission != null and commission != ''">
+							and a.commission = #{commission}
+							</if>							 					                
+					   	    <if test="tax != null and tax != ''">
+							and a.tax = #{tax}
+							</if>							 					                
+					   	    <if test="period != null and period != ''">
+							and a.period = #{period}
+							</if>														       						 					                
+                         )a inner join 
+                         (
+						 select a.store_id,
+								a.high_store_id,
+								a.business_nm
+						   from tb_store a
+						  inner join tb_store_role b
+							 on a.store_id = b.store_id
+							and b.role_id = '1003'   	
+					  	    <if test="high_store_id != null and high_store_id != ''">
+							and a.high_store_id = #{high_store_id}
+							</if>									
+					  	    <if test="roleStore2 != null and roleStore2 != '' and roleStore2 != '선택'">
+							and a.store_id = #{roleStore2}
+							</if>												
+                         )b
+					  on a.high_store_id = b.store_id
+					inner join 
+                         (
+						 select a.store_id,
+								a.high_store_id,
+								a.business_nm 
+						   from tb_store a
+						  inner join tb_store_role b
+							 on a.store_id = b.store_id
+							and b.role_id = '1002' 		
+					  	    <if test="roleStore != null and roleStore != ''">
+							and a.store_id = #{roleStore}
+							</if>													                   
+                         )c
+					  on b.high_store_id = c.store_id 	
+	</select>
+	
+	<select id="selectManage2Info" parameterType="Manage2VO" resultMap="manage2">
+	 select a.no,
+	 		a.store_id,
+			a.high_store_id,
+			a.passwd,
+			a.business_nm,
+			(select business_nm high_business_nm from tb_store where store_id = a.high_store_id) high_business_nm,
+			a.ceo,
+			a.ceo_birth,
+			a.corp_regist_num,
+			a.corp_regist_num2,
+			a.corp_type,
+			a.business_cond,
+			a.industry_type,
+			a.tel,
+			a.fax,
+			a.phone_num,
+			a.email,
+			a.contract_date,
+			a.bank_code,
+			b.bank_nm,
+			a.account_num,
+			a.accounter,
+			a.state,
+			a.hompage,
+			a.zip_code,
+			a.address,
+			a.detail_address,
+			a.terminal_id,
+			a.imei,
+			a.person_nm1,
+			a.person_phone1,
+			a.person_email1,
+			a.person_nm2,
+			a.person_phone2,
+			a.person_email2,
+			a.person_nm3,
+			a.person_phone3,
+			a.person_email3,
+			a.commission,
+			a.period,
+			a.deposit,
+	        a.itg_limitset,
+			a.tax,
+			a.cpid,
+			a.deposit,	
+			a.settlement_type,
+			a.created_id,   
+			a.created_datetime,    
+			a.updated_id,   
+			a.updated_datetime,
+			a.daily_transaction_limit,
+			a.monthly_transaction_limit,
+			a.samecard_daily_limit,
+			a.transaction_limit,
+			a.samecard_daily_approvals,
+			a.installment_months,
+			a.credit_card_k,
+			a.credit_card,
+			a.terminal,
+			a.account_transfer,
+			a.virtual_account,
+			a.gift_voucher,
+			a.smart_gift_voucher,
+			a.book_gift_voucher,
+			a.payment_device
+	   from tb_store a
+	   left join tb_bank b
+	     on a.bank_code = b.bank_code 
+	  where a.store_id = #{store_id}
+	</select>
+		
+	<insert id="manage2Add" parameterType="Manage2VO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_store
+			       (
+			        store_id,
+					high_store_id,
+					passwd,
+					business_nm,
+					ceo,
+					ceo_birth,
+					corp_regist_num,
+					corp_regist_num2,
+					corp_type,
+					business_cond,
+					industry_type,
+					tel,
+					fax,
+					phone_num,
+					email,
+					contract_date,
+					bank_code,
+					account_num,
+					accounter,
+					state,
+					hompage,
+					zip_code,
+					address,
+					detail_address,
+					terminal_id,
+					imei,
+					person_nm1,
+					person_phone1,
+					person_email1,
+					person_nm2,
+					person_phone2,
+					person_email2,
+					person_nm3,
+					person_phone3,
+					person_email3,
+					tax,
+					commission,
+					credit_card_k,
+					credit_card,
+					terminal,
+					account_transfer,
+					virtual_account,
+					gift_voucher,
+					smart_gift_voucher,
+					book_gift_voucher,
+					settlement_type,
+					period,
+					cpid,
+					deposit,
+	          		itg_limitset,
+					daily_transaction_limit,
+					monthly_transaction_limit,
+					samecard_daily_limit,
+					transaction_limit,
+					samecard_daily_approvals,
+					installment_months,
+					created_id,   
+					created_datetime,
+					payment_device
+			       )
+		           values
+		           (
+			        #{store_id},
+					#{high_store_id},
+					#{passwd},
+					#{business_nm},
+					#{ceo},
+					#{ceo_birth},
+					#{corp_regist_num},
+					#{corp_regist_num2},
+					#{corp_type},
+					#{business_cond},
+					#{industry_type},
+					#{tel},
+					#{fax},
+					#{phone_num},
+					#{email},
+					#{contract_date},
+					#{bank_code},
+					#{account_num},
+					#{accounter},
+					#{state},
+					#{hompage},
+					#{zip_code},
+					#{address},
+					#{detail_address},
+					#{terminal_id},
+					#{imei},
+					#{person_nm1},
+					#{person_phone1},
+					#{person_email1},
+					#{person_nm2},
+					#{person_phone2},
+					#{person_email2},
+					#{person_nm3},
+					#{person_phone3},
+					#{person_email3},
+					#{tax},
+					#{commission},
+					#{credit_card_k},
+					#{credit_card},
+					#{terminal},
+					#{account_transfer},
+					#{virtual_account},
+					#{gift_voucher},
+					#{smart_gift_voucher},
+					#{book_gift_voucher},
+					#{settlement_type},
+					#{period},
+					#{cpid},
+					#{deposit},
+					#{itg_limitset},
+					#{daily_transaction_limit},
+					#{monthly_transaction_limit},
+					#{samecard_daily_limit},
+					#{transaction_limit},
+					#{samecard_daily_approvals},
+					#{installment_months},
+					#{created_id},   
+					now(),
+					#{payment_device}
+		           )	    	
+	</insert>	
+	
+	<insert id="manage2RoleAdd" parameterType="Manage2VO">
+	   insert into tb_store_role
+			       (
+			        store_id,
+			        role_id
+			       )
+		           values
+		           (
+			        #{store_id},
+			        #{role_id}
+		           )	    	
+	</insert>	
+		
+	<update id="manage2Mod" parameterType="Manage2VO">
+	   update tb_store
+	      set 
+	      	  <if test="high_store_id != null and high_store_id != ''">
+	          high_store_id = #{high_store_id},
+	          </if>
+	          <if test="business_nm != null and business_nm != ''">
+	          business_nm = #{business_nm},
+	          </if>
+	          ceo = #{ceo},
+	          ceo_birth = #{ceo_birth},
+	          <if test="corp_regist_num != null and corp_regist_num != ''">
+	          corp_regist_num = #{corp_regist_num},
+	          </if>
+	          <if test="corp_regist_num2 != null and corp_regist_num2 != ''">
+	          corp_regist_num2 = #{corp_regist_num2},
+	          </if>
+	          <if test="corp_type != null and corp_type != ''">
+	          corp_type = #{corp_type},
+	          </if>
+	          business_cond = #{business_cond},
+	          industry_type = #{industry_type},
+	          tel = #{tel},
+	          fax = #{fax},
+	          phone_num = #{phone_num},
+	          email = #{email},
+	          <if test="contract_date != null and contract_date != ''">
+	          contract_date = #{contract_date},
+	          </if>
+	          <if test="settlement_type != null and settlement_type != ''">
+	          settlement_type = #{settlement_type},
+	          </if>
+	          <if test="payment_device != null and payment_device != ''">
+	          payment_device = #{payment_device},
+	          </if>
+	          <if test="bank_code != null and bank_code != ''">
+	          bank_code = #{bank_code},
+	          </if>
+	          <if test="account_num != null and account_num != ''">
+	          account_num = #{account_num},
+	          </if>
+	          <if test="accounter != null and accounter != ''">
+	          accounter = #{accounter},
+	          </if>
+	          <if test="state != null and state != ''">
+	          state = #{state},
+	          </if>
+	          <if test='state != null and state == "Y"'>
+	          state_datetime = null,
+	          </if>	          
+	          <if test='state != null and state == "N"'>
+	          state_datetime = now(),
+	          </if>	 	          
+	          hompage = #{hompage},
+	          zip_code = #{zip_code},
+	          address = #{address},
+	          detail_address = #{detail_address},
+	          <if test="terminal_id != null and terminal_id != ''">
+	          terminal_id = #{terminal_id},
+	          </if>
+	          <if test="imei != null and imei != ''">
+	          imei = #{imei},
+	          </if>
+	          person_nm1 = #{person_nm1},
+	          person_phone1 = #{person_phone1},
+	          person_email1 = #{person_email1},
+	          person_nm2 = #{person_nm2},
+	          person_phone2 = #{person_phone2},
+	          person_email2 = #{person_email2},
+	          person_nm3 = #{person_nm3},
+	          person_phone3 = #{person_phone3},
+	          person_email3 = #{person_email3},
+	          <if test="tax != null and tax != ''">
+	          tax = #{tax},
+	          </if>	 	
+	          <if test="commission != null and commission != ''">
+	          commission = #{commission},
+	          </if>	 	
+	          <if test="credit_card_k != null and credit_card_k != ''">
+	          credit_card_k = #{credit_card_k},
+	          </if>	 	
+	          <if test="credit_card != null and credit_card != ''">
+	          credit_card = #{credit_card},
+	          </if>	 	
+	          <if test="terminal != null and terminal != ''">
+	          terminal = #{terminal},
+	          </if>	 	
+	          <if test="account_transfer != null and account_transfer != ''">
+	          account_transfer = #{account_transfer},
+	          </if>	 	
+	          <if test="virtual_account != null and virtual_account != ''">
+	          virtual_account = #{virtual_account},
+	          </if>	 	
+	          <if test="gift_voucher != null and gift_voucher != ''">
+	          gift_voucher = #{gift_voucher},
+	          </if>	 	
+	          <if test="smart_gift_voucher != null and smart_gift_voucher != ''">
+	          smart_gift_voucher = #{smart_gift_voucher},
+	          </if>	 	
+	          <if test="book_gift_voucher != null and book_gift_voucher != ''">
+	          book_gift_voucher = #{book_gift_voucher},
+	          </if>	 	
+	          <if test="period != null and period != ''">
+	          period = #{period},
+	          </if>	 	
+	          <if test="cpid != null and cpid != ''">
+	          cpid = #{cpid},
+	          </if>
+	          deposit = #{deposit},
+	          itg_limitset = #{itg_limitset},
+	          daily_transaction_limit = #{daily_transaction_limit},
+	          monthly_transaction_limit = #{monthly_transaction_limit},
+	          samecard_daily_limit = #{samecard_daily_limit},
+	          transaction_limit = #{transaction_limit},
+	          samecard_daily_approvals = #{samecard_daily_approvals},
+	          installment_months = #{installment_months},
+	          <if test="passwd != null and passwd != ''">
+	          passwd = #{passwd},
+	          </if>
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where store_id = replace(#{store_id},' ','') 
+	</update>	
+	
+	<delete id="manage2Del" parameterType="Manage2VO">
+	   delete from tb_store
+	    where store_id = #{store_id}
+	</delete>
+	
+	<delete id="manage2RoleDel" parameterType="Manage2VO">
+	   delete from tb_store_role
+	    where store_id = #{store_id}
+	</delete>
+	
+	<delete id="manage2EmailDel" parameterType="Manage2VO">
+	   delete from tb_email
+	    where store_id = #{store_id}
+	</delete>
+	
+	<delete id="manage2PhoneDel" parameterType="Manage2VO">
+	   delete from tb_phone
+	    where store_id = #{store_id}
+	</delete>
+	
+	<delete id="manage2InquiryDel" parameterType="Manage2VO">
+	   delete from tb_inquiry
+	    where store_id = #{store_id}
+	</delete>
+	
+	<select id="selectManage2ListExcel" parameterType="searchManage2VO" resultMap="manage2">
+		   select a.store_id,
+				  a.high_store_id,
+				  a.passwd,
+				  a.business_nm,
+				  a.business_nm2,
+				  a.business_nm3,
+				  a.ceo,
+				  a.ceo_birth,
+				  a.corp_regist_num,
+				  a.corp_regist_num2,
+				  a.corp_type,
+				  a.business_cond,
+				  a.industry_type,
+				  a.tel,
+				  a.fax,
+				  a.phone_num,
+				  a.email,
+				  a.contract_date,
+				  a.bank_code,
+				  a.account_num,
+				  a.state,
+				  a.hompage,
+				  a.zip_code,
+				  a.address,
+				  a.detail_address,
+				  a.terminal_id,
+				  a.person_nm1,
+				  a.person_phone1,
+				  a.person_email1,
+				  a.person_nm2,
+				  a.person_phone2,
+				  a.person_email2,
+				  a.person_nm3,
+				  a.person_phone3,
+				  a.person_email3,
+	 		      a.commission,
+				  a.period,
+				  a.itg_limitset,
+				  a.tax,				  
+			 	  a.created_id,   
+				  date_format(a.created_datetime, '%Y.%m.%d') created_datetime,    
+				  a.updated_id,   
+				  a.updated_datetime  
+             from (
+				  select a.store_id,
+						 a.high_store_id,
+						 a.passwd,
+						 a.business_nm,
+                         b.business_nm as business_nm2,
+                         c.business_nm as business_nm3,
+						 a.ceo,
+						 a.ceo_birth,
+						 a.corp_regist_num,
+						 a.corp_regist_num2,
+						 a.corp_type,
+						 a.business_cond,
+						 a.industry_type,
+						 a.tel,
+						 a.fax,
+						 a.phone_num,
+						 a.email,
+						 a.contract_date,
+						 a.bank_code,
+						 a.account_num,
+						 a.state,
+						 a.hompage,
+						 a.zip_code,
+						 a.address,
+						 a.detail_address,
+						 a.terminal_id,
+						 a.person_nm1,
+						 a.person_phone1,
+						 a.person_email1,
+						 a.person_nm2,
+						 a.person_phone2,
+						 a.person_email2,
+						 a.person_nm3,
+						 a.person_phone3,
+						 a.person_email3,
+					     a.commission,
+					     a.period,
+					     a.itg_limitset,
+					     a.tax,						 
+						 a.created_id,   
+						 date_format(a.created_datetime, '%Y.%m.%d') created_datetime,    
+						 a.updated_id,   
+				 	 	 a.updated_datetime  
+					from (
+						 select a.store_id,
+								a.high_store_id,
+								a.passwd,
+								a.business_nm,
+								a.ceo,
+								a.ceo_birth,
+								a.corp_regist_num,
+								a.corp_regist_num2,
+								a.corp_type,
+								a.business_cond,
+								a.industry_type,
+								a.tel,
+								a.fax,
+								a.phone_num,
+								a.email,
+								a.contract_date,
+								a.bank_code,
+								a.account_num,
+								a.state,
+								a.hompage,
+								a.zip_code,
+								a.address,
+								a.detail_address,
+								a.terminal_id,
+								a.person_nm1,
+								a.person_phone1,
+								a.person_email1,
+								a.person_nm2,
+								a.person_phone2,
+								a.person_email2,
+								a.person_nm3,
+								a.person_phone3,
+								a.person_email3,
+							    a.commission,
+							    a.period,
+							    a.itg_limitset,
+							    a.tax,										
+								a.created_id,   
+								date_format(a.created_datetime, '%Y.%m.%d') created_datetime,    
+								a.updated_id,   
+								a.updated_datetime    
+						   from tb_store a
+						  inner join tb_store_role b
+							 on a.store_id = b.store_id
+							and b.role_id = '1004'     					
+					   	    <if test="list != null and list != ''">
+				            and a.store_id in 
+				               <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+				                   #{item}
+				               </foreach>									
+							</if>								 					                
+                         )a inner join 
+                         (
+						 select a.store_id,
+								a.high_store_id,
+								a.business_nm
+						   from tb_store a
+						  inner join tb_store_role b
+							 on a.store_id = b.store_id
+							and b.role_id = '1003'   						
+                         )b
+					  on a.high_store_id = b.store_id
+					inner join 
+                         (
+						 select a.store_id,
+								a.high_store_id,
+								a.business_nm 
+						   from tb_store a
+						  inner join tb_store_role b
+							 on a.store_id = b.store_id
+							and b.role_id = '1002'   						                   
+                         )c
+					  on b.high_store_id = c.store_id              
+                  )a   	
+	</select>
+
+	<update id="manageCommissionActiveMod" parameterType="Manage2VO">
+	   update tb_store_commission 
+	   set active = 0
+	   where store_id = replace(#{store_id}, ' ', '')	
+	</update>
+	
+	<insert id="manageCommissionAdd" parameterType="Manage2VO">
+	   insert into tb_store_commission
+		(
+			store_id,
+			credit_card_k,
+			credit_card,
+			terminal,
+			account_transfer,
+			virtual_account,
+			gift_voucher,
+			smart_gift_voucher,
+			book_gift_voucher,
+			created_id,
+			created_datetime
+		) values (
+			replace(#{store_id}, ' ', ''),
+			#{credit_card_k},
+			#{credit_card},
+			#{terminal},
+			#{account_transfer},
+			#{virtual_account},
+			#{gift_voucher},
+			#{smart_gift_voucher},
+			#{book_gift_voucher},
+			#{created_id},   
+			now()
+		)
+	</insert>	
+</mapper>

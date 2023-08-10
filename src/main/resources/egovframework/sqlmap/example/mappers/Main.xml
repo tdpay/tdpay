@@ -1,0 +1,1172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.main.service.impl.MainMapper">
+
+	<resultMap id="main" type="egovframework.example.main.service.MainVO">
+		<result property="ym" column="ym"/>
+		<result property="sun" column="sun"/>
+		<result property="mon" column="mon"/>
+		<result property="tue" column="tue"/>
+		<result property="wed" column="wed"/>
+		<result property="thu" column="thu"/>
+		<result property="fri" column="fri"/>
+		<result property="sat" column="sat"/>	
+		<result property="period" column="period"/>	
+		<result property="start_end_date" column="start_end_date"/>	
+		<result property="commission_total" column="commission_total"/>	
+		<result property="tocnt" column="tocnt"/>
+		<result property="title" column="title"/>
+		<result property="created_datetime" column="created_datetime"/>
+		<result property="amount" column="amount"/>
+	</resultMap>
+	
+	<select id="selectMainSettlementAllListCnt" parameterType="searchMainVO" resultMap="main">
+	 select FORMAT(count(*), 0) tocnt, ifnull(FORMAT(sum(a.amount2), 0), 0) amount
+	   from (
+ 		 	 select a.no,
+				    a.daoutrx,
+				    a.userid,
+				    a.orderno,
+				    a.username,
+				    a.productname,
+				    FORMAT(a.amount, 0) amount,
+                    FORMAT(a.vat, 0) vat,
+				    date_format(a.authdate, '%Y.%m.%d') authdate,
+				    a.cardname,
+				    a.cardcode,
+                    a.cardno,
+                    a.quota,
+                    b.terminalid,
+                    b.commission,
+                    b.commission2,
+                    b.commission3,
+                    b.tax,
+                    FORMAT(a.amount - a.vat, 0) amount2,
+                    b.bank_nm
+			   from (
+					select a.no,
+						   a.daoutrx,
+                           a.userid,
+                           a.orderno,
+                           a.username,
+                           a.productname,
+						   a.amount,
+                           a.amount / 10 vat,
+                           a.authdate,
+                           '' cardname,
+                           '' cardcode,
+                           a.cardno,
+                           a.quota
+					  from tb_card_auth a
+					  left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+					   and b.cpid = a.cpid
+					 where a.resultcode = '0000'
+                       and b.daoutrx is null
+                     )a  
+			  inner join (
+					 select a.store_id,
+							a.terminal_id terminalid,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3,
+                            ifnull(a.commission, 0) commission,
+                            ifnull(b.commission2, 0) commission2,
+                            ifnull(c.commission3, 0) commission3,
+                            a.bank_nm
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm,
+                                   a.commission,
+                                   c.bank_nm
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'
+							 inner join tb_bank c
+                                on a.bank_code = c.bank_code
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>										   
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>		                                
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2,
+                                   a.commission as commission2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'   
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>								            
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3,
+                                   a.commission as commission3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'         
+							 )c
+						  on b.high_store_id = c.store_id             
+					)b
+				 on a.userid = b.store_id
+			  union all
+ 		 	 select a.no,
+				    a.daoutrx,
+				    a.userid,
+				    a.orderno,
+				    a.username,
+				    a.productname,
+				    FORMAT(a.amount, 0) amount,
+                    FORMAT(a.vat, 0) vat,
+				    date_format(a.authdate, '%Y.%m.%d') authdate,
+				    a.cardname,
+				    a.cardcode,
+                    a.cardno,
+                    a.quota,
+                    b.terminalid,
+                    b.commission,
+                    b.commission2,
+                    b.commission3,
+                    b.tax,
+                    FORMAT(a.amount - a.vat, 0) amount2,
+                    b.bank_nm
+			   from (
+					select a.no,
+						   a.daoutrx,
+                           a.userid,
+                           a.orderno,
+                           a.username,
+                           a.productname,
+						   a.amount,
+                           a.amount / 10 vat,
+                           a.authdate,
+                           '' cardname,
+                           '' cardcode,
+                           a.cardno,
+                           a.quota
+					  from tb_card_auth2 a
+					  left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+					   and b.cpid = a.cpid
+					 where a.resultcode = '0000'
+                       and b.daoutrx is null
+                     )a  
+			  inner join (
+					 select a.store_id,
+							a.terminal_id terminalid,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3,
+                            ifnull(a.commission, 0) commission,
+                            ifnull(b.commission2, 0) commission2,
+                            ifnull(c.commission3, 0) commission3,
+                            a.bank_nm
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm,
+                                   a.commission,
+                                   c.bank_nm
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'
+							 inner join tb_bank c
+                                on a.bank_code = c.bank_code
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>										   
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>		                                
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2,
+                                   a.commission as commission2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'     
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>								          
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3,
+                                   a.commission as commission3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'         
+							 )c
+						  on b.high_store_id = c.store_id             
+					)b
+				 on a.userid = b.store_id			  
+			  union all
+			 select a.no,
+				    a.daoutrx,
+                    b.store_id userid,
+				    '' orderno,
+				    '' username,
+				    '' productname,             
+				    FORMAT(a.amount, 0) amount,
+                    FORMAT(a.vat, 0) vat,
+				    date_format(a.authdate, '%Y.%m.%d') authdate,
+				    a.cardname,
+				    a.cardcode,
+				    a.cardno,
+				    a.quota,
+                    a.terminalid, 
+                    b.commission,
+                    b.commission2,
+                    b.commission3,
+                    b.tax,
+                    FORMAT(a.amount - a.vat, 0) amount2,
+                    b.bank_nm
+		  	   from (
+					select a.no,
+						   a.daoutrx,
+                           a.terminalid,                           
+						   a.amount,
+                           a.amount / 10 vat,
+                           a.settdate authdate,
+                           a.cardname,
+                           a.cardcode,
+                           a.cardno,
+                           a.allotmon quota                           
+					  from tb_pay_notice a
+					  left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+					   and b.cpid = a.cpid
+					 where b.daoutrx is null
+                     )a
+			   inner join (
+					 select a.store_id,
+							a.terminal_id terminalid,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3,
+                            ifnull(a.commission, 0) commission,
+                            ifnull(b.commission2, 0) commission2,
+                            ifnull(c.commission3, 0) commission3,
+                            a.bank_nm
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm,
+                                   a.commission,
+                                   c.bank_nm
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'
+							 inner join tb_bank c
+                                on a.bank_code = c.bank_code    
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>										   
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>		                                    
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2,
+                                   a.commission as commission2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'      
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>										         
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3,
+                                   a.commission as commission3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'         
+							 )c
+						  on b.high_store_id = c.store_id             
+					)b
+				 on a.terminalid = b.terminalid                
+			)a
+	  where 1 = 1
+		<if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+		and date(a.authdate) BETWEEN #{start_datetime} AND #{end_datetime}
+		</if>	
+	</select>	
+		
+	<select id="selectMainCalendarList" parameterType="searchMainVO" resultMap="main">
+	<![CDATA[
+	SELECT ym
+	     , MIN(CASE dw WHEN 1 THEN d END) sun
+	     , MIN(CASE dw WHEN 2 THEN d END) mon
+	     , MIN(CASE dw WHEN 3 THEN d END) tue
+	     , MIN(CASE dw WHEN 4 THEN d END) wed
+	     , MIN(CASE dw WHEN 5 THEN d END) thu
+	     , MIN(CASE dw WHEN 6 THEN d END) fri
+	     , MIN(CASE dw WHEN 7 THEN d END) sat
+	  FROM (SELECT date_format(dt,'%Y%m') ym
+	             , Week(dt) w
+	             , Day(dt) d
+	             , DayofWeek(dt) dw
+	          FROM (SELECT CONCAT(y, '0101') + INTERVAL a*100 + b*10 + c DAY dt
+	                  FROM (SELECT 0 a
+	                        UNION ALL SELECT 1
+	                        UNION ALL SELECT 2
+	                        UNION ALL SELECT 3
+	                        ) a
+	                     , (SELECT 0 b
+	                        UNION ALL SELECT 1
+	                        UNION ALL SELECT 2
+	                        UNION ALL SELECT 3
+	                        UNION ALL SELECT 4
+	                        UNION ALL SELECT 5
+	                        UNION ALL SELECT 6
+	                        UNION ALL SELECT 7
+	                        UNION ALL SELECT 8
+	                        UNION ALL SELECT 9
+	                        ) b
+	                     , (SELECT 0 c
+	                        UNION ALL SELECT 1
+	                        UNION ALL SELECT 2
+	                        UNION ALL SELECT 3
+	                        UNION ALL SELECT 4
+	                        UNION ALL SELECT 5
+	                        UNION ALL SELECT 6
+	                        UNION ALL SELECT 7
+	                        UNION ALL SELECT 8
+	                        UNION ALL SELECT 9
+	                        ) c
+	                     , (SELECT #{yyyy} y) d
+	                 WHERE a*100 + b*10 + c < DayOfYear(CONCAT(y, '1231'))
+	                ) a
+	        ) a
+	 where ym = #{ym}    
+	 GROUP BY ym, w
+	 ]]>
+	</select>	
+	
+	<select id="selectMainCalendarData" parameterType="searchMainVO" resultMap="main">
+  select max(a.period) period,
+  		 concat(max(date_format(a.start_date, '%m.%d')),'~',max(date_format(a.end_date, '%m.%d'))) start_end_date,
+		 case when #{role_id} = '1004' then FORMAT(sum(a.commission_total), 0)
+		      when #{role_id} = '1003' then FORMAT(sum(a.commission_total2), 0)
+		      when #{role_id} = '1002' then FORMAT(sum(a.commission_total3), 0)
+		      when #{role_id} = '1001' then FORMAT(sum(a.commission_total) - sum(a.commission_total2) -sum(a.commission_total3), 0)
+		      end commission_total
+	from (
+		 select a.store_id,
+				a.terminal_id,
+				a.period,
+				a.start_date,
+				a.end_date,
+				a.amount,
+				a.vat,
+				a.commission,
+				a.commission2,
+				a.commission3,
+				a.tax,
+				a.tax2,
+				a.tax3,
+				case when a.tax = 'Y' then FORMAT(a.amount * a.commission / 100, 0)
+					 when a.tax = 'N' then FORMAT(a.amount * 3.3 / 100, 0)
+				end commission_total,
+				case when a.tax2 = 'Y' then FORMAT(a.amount * a.commission2 / 100, 0)
+					 when a.tax2 = 'N' then FORMAT(a.amount * 3.3 / 100, 0)
+				end commission_total2,
+				case when a.tax3 = 'Y' then FORMAT(a.amount * a.commission3 / 100, 0)
+					 when a.tax3 = 'N' then FORMAT(a.amount * 3.3 / 100, 0)
+				end commission_total3                
+		   from (
+				 select a.store_id,
+						a.terminal_id,
+						a.period,
+						a.start_date,
+						a.end_date,
+						ifnull(b.amount, 0) + ifnull(c.amount, 0) + ifnull(d.amount, 0) amount,
+						ifnull(b.vat, 0) + ifnull(c.vat, 0) + ifnull(d.vat, 0) vat,
+						a.commission,
+						a.commission2,
+						a.commission3,
+						a.tax,
+						a.tax2,
+						a.tax3              
+				   from (
+						select a.store_id,
+							   a.terminal_id,
+							   a.commission,
+							   c.commission2,
+							   d.commission3,
+							   a.period,
+							   date_format(((concat(#{ym}, lpad(a.period, 2, 0)) - INTERVAL 1 MONTH) + INTERVAL 1 day), '%Y%m%d') start_date,
+							   date_format((concat(#{ym}, lpad(a.period, 2, 0)) - INTERVAL 1 day), '%Y%m%d') end_date,
+							   a.tax,
+							   c.tax2,
+							   d.tax3
+						  from tb_store a
+						 inner join tb_store_role b
+							on a.store_id = b.store_id
+					  	    <if test="store_id != null and store_id != ''">
+							and a.store_id = #{store_id}
+							</if>		
+					  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+							and a.high_store_id = #{high_store_id2}
+							</if>								
+						   and b.role_id = '1004'
+						 inner join (
+								select a.store_id,
+									   a.high_store_id,
+									   a.commission as commission2,
+									   a.tax as tax2
+								  from tb_store a
+								 inner join tb_store_role b
+									on a.store_id = b.store_id
+							  	    <if test="high_store_id != null and high_store_id != ''">
+									and a.high_store_id = #{high_store_id}
+									</if>	
+								   and b.role_id = '1003'                        
+							   )c
+							on a.high_store_id = c.store_id 
+						 inner join (
+								select a.store_id,
+									   a.high_store_id,
+									   a.commission as commission3,
+									   a.tax as tax3
+								  from tb_store a
+								 inner join tb_store_role b
+									on a.store_id = b.store_id
+								   and b.role_id = '1002'                        
+							   )d
+							on c.high_store_id = d.store_id                         
+						)a 
+				   left join ( 
+						 select a.userid,   
+								a.amount,
+								a.vat,
+								a.authdate
+						   from (
+								select a.userid,
+									   ifnull(a.amount, 0) amount,
+									   ifnull(a.amount, 0) / 10 vat,
+									   date_format(a.authdate,  '%Y%m%d') authdate,
+									   a.quota
+								  from tb_card_auth a
+								  left join tb_card_cancel b
+									on b.daoutrx = a.daoutrx
+								   and b.cpid = a.cpid
+								  left join tb_pay_hold c
+			                        on c.daoutrx = a.daoutrx
+			                       and c.cpid = a.cpid                        
+								 where a.resultcode = '0000'
+			                       and b.daoutrx is null
+								   and c.daoutrx is null
+								)a
+						)b
+					 on a.store_id = b.userid
+					and b.authdate <![CDATA[>=]]> a.start_date
+					and b.authdate <![CDATA[<=]]> a.end_date
+				   left join (
+						 select a.terminalid,   
+								a.amount,
+								a.vat,
+								a.authdate
+						   from (   
+								select a.terminalid,                           
+									   ifnull(a.amount, 0) amount,
+									   ifnull(a.amount, 0) / 10 vat,
+									   date_format(a.settdate,  '%Y%m%d') authdate,
+									   a.allotmon quota                           
+								  from tb_pay_notice a
+								  left join tb_card_cancel b
+									on b.daoutrx = a.daoutrx
+								   and b.cpid = a.cpid
+								  left join tb_pay_hold c
+			                        on c.daoutrx = a.daoutrx  	
+			                       and c.cpid = a.cpid 					
+								 where b.daoutrx is null
+								   and c.daoutrx is null								 
+								 )a
+						)c
+					 on a.store_id = c.terminalid
+					and c.authdate <![CDATA[>=]]> a.start_date
+					and c.authdate <![CDATA[<=]]> a.end_date
+				   left join ( 
+						 select a.userid,   
+								a.amount,
+								a.vat,
+								a.authdate
+						   from (
+								select a.userid,
+									   ifnull(a.amount, 0) amount,
+									   ifnull(a.amount, 0) / 10 vat,
+									   date_format(a.authdate,  '%Y%m%d') authdate,
+									   a.quota
+								  from tb_card_auth2 a
+								  left join tb_card_cancel b
+									on b.daoutrx = a.daoutrx
+								   and b.cpid = a.cpid
+								  left join tb_pay_hold c
+			                        on c.daoutrx = a.daoutrx
+			                       and c.cpid = a.cpid                        
+								 where a.resultcode = '0000'
+			                       and b.daoutrx is null
+								   and c.daoutrx is null
+								)a
+						)d
+					 on a.store_id = d.userid
+					and d.authdate <![CDATA[>=]]> a.start_date
+					and d.authdate <![CDATA[<=]]> a.end_date					
+				)a
+		   )a         	
+	</select>
+		
+	<select id="selectMainSettlementHisListCnt" parameterType="searchMainVO" resultMap="main">
+	 select count(*) tocnt
+	   from (
+ 		 	 select a.no,
+				    a.daoutrx,
+				    a.userid,
+				    a.orderno,
+				    a.username,
+				    a.productname,
+				    FORMAT(a.amount, 0) amount,
+                    FORMAT(a.vat, 0) vat,
+				    date_format(a.authdate, '%Y.%m.%d') authdate,
+				    date_format(a.canceldate, '%Y.%m.%d') canceldate,
+				    a.cardname,
+				    a.cardcode,
+                    a.cardno,
+                    a.quota,
+                    b.terminalid,
+                    b.commission,
+                    b.commission2,
+                    b.commission3,
+					b.business_nm,
+					b.business_nm2,
+					b.business_nm3,                    
+                    b.tax,
+                    FORMAT(a.amount - a.vat, 0) amount2,
+                    b.bank_nm,
+                    b.period,
+                    b.state,
+                    a.cpid
+			   from (
+					select a.no,
+						   a.daoutrx,
+                           a.userid,
+                           a.orderno,
+                           a.username,
+                           a.productname,
+						   a.amount,
+                           a.amount / 10 vat,
+                           a.authdate,
+                           b.created_datetime canceldate,
+                           '' cardname,
+                           '' cardcode,
+                           a.cardno,
+                           a.quota,
+                           a.cpid
+					  from tb_card_auth a
+					  left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+					   and b.cpid = a.cpid
+					 inner join tb_pay_hold c
+                        on a.daoutrx = c.daoutrx     
+                       and a.cpid = c.cpid                   
+					 where a.resultcode = '0000'
+                       and b.daoutrx is null
+                     )a  
+			  inner join (
+					 select a.store_id,
+							a.terminal_id terminalid,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3,
+                            ifnull(a.commission, 0) commission,
+                            ifnull(b.commission2, 0) commission2,
+                            ifnull(c.commission3, 0) commission3,
+                            a.bank_nm,
+                            a.period,
+                            a.state
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm,
+                                   a.commission,
+                                   c.bank_nm,
+                                   a.period,
+                                   a.state
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'
+							 inner join tb_bank c
+                                on a.bank_code = c.bank_code
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>			                                
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>			                                
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2,
+                                   a.commission as commission2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'            
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>									   
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3,
+                                   a.commission as commission3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'    
+							 )c
+						  on b.high_store_id = c.store_id             
+					)b
+				 on a.userid = b.store_id
+			  union all
+ 		 	 select a.no,
+				    a.daoutrx,
+				    a.userid,
+				    a.orderno,
+				    a.username,
+				    a.productname,
+				    FORMAT(a.amount, 0) amount,
+                    FORMAT(a.vat, 0) vat,
+				    date_format(a.authdate, '%Y.%m.%d') authdate,
+				    date_format(a.canceldate, '%Y.%m.%d') canceldate,
+				    a.cardname,
+				    a.cardcode,
+                    a.cardno,
+                    a.quota,
+                    b.terminalid,
+                    b.commission,
+                    b.commission2,
+                    b.commission3,
+					b.business_nm,
+					b.business_nm2,
+					b.business_nm3,                    
+                    b.tax,
+                    FORMAT(a.amount - a.vat, 0) amount2,
+                    b.bank_nm,
+                    b.period,
+                    b.state,
+                    a.cpid
+			   from (
+					select a.no,
+						   a.daoutrx,
+                           a.userid,
+                           a.orderno,
+                           a.username,
+                           a.productname,
+						   a.amount,
+                           a.amount / 10 vat,
+                           a.authdate,
+                           b.created_datetime canceldate,
+                           '' cardname,
+                           '' cardcode,
+                           a.cardno,
+                           a.quota,
+                           a.cpid
+					  from tb_card_auth2 a
+					  left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+					   and b.cpid = a.cpid
+					 inner join tb_pay_hold c
+                        on a.daoutrx = c.daoutrx     
+                       and a.cpid = c.cpid                   
+					 where a.resultcode = '0000'
+                       and b.daoutrx is null
+                     )a  
+			  inner join (
+					 select a.store_id,
+							a.terminal_id terminalid,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3,
+                            ifnull(a.commission, 0) commission,
+                            ifnull(b.commission2, 0) commission2,
+                            ifnull(c.commission3, 0) commission3,
+                            a.bank_nm,
+                            a.period,
+                            a.state
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm,
+                                   a.commission,
+                                   c.bank_nm,
+                                   a.period,
+                                   a.state
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'
+							 inner join tb_bank c
+                                on a.bank_code = c.bank_code
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>		                                
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>	                                
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2,
+                                   a.commission as commission2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'        
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>								       
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3,
+                                   a.commission as commission3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'    
+							 )c
+						  on b.high_store_id = c.store_id             
+					)b
+				 on a.userid = b.store_id			  
+			  union all
+			 select a.no,
+				    a.daoutrx,
+                    b.store_id userid,
+				    '' orderno,
+				    '' username,
+				    '' productname,             
+				    FORMAT(a.amount, 0) amount,
+                    FORMAT(a.vat, 0) vat,
+				    date_format(a.authdate, '%Y.%m.%d') authdate,
+				    date_format(a.canceldate, '%Y.%m.%d') canceldate,
+				    a.cardname,
+				    a.cardcode,
+				    a.cardno,
+				    a.quota,
+                    a.terminalid, 
+                    b.commission,
+                    b.commission2,
+                    b.commission3,
+					b.business_nm,
+					b.business_nm2,
+					b.business_nm3,                      
+                    b.tax,
+                    FORMAT(a.amount - a.vat, 0) amount2,
+                    b.bank_nm,
+                    b.period,
+                    b.state,
+                    a.cpid
+		  	   from (
+					select a.no,
+						   a.daoutrx,
+                           a.terminalid,                           
+						   a.amount,
+                           a.amount / 10 vat,
+                           a.settdate authdate,
+                           b.created_datetime canceldate,
+                           a.cardname,
+                           a.cardcode,
+                           a.cardno,
+                           a.allotmon quota,
+                           a.cpid                           
+					  from tb_pay_notice a
+					  left join tb_card_cancel b
+						on b.daoutrx = a.daoutrx
+					   and b.cpid = a.cpid
+					 inner join tb_pay_hold c
+                        on a.daoutrx = c.daoutrx
+                       and a.cpid = c.cpid  						
+					 where b.daoutrx is null
+                     )a
+			   inner join (
+					 select a.store_id,
+							a.terminal_id terminalid,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3,
+                            ifnull(a.commission, 0) commission,
+                            ifnull(b.commission2, 0) commission2,
+                            ifnull(c.commission3, 0) commission3,
+                            a.bank_nm,
+                            a.period,
+                            a.state
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm,
+                                   a.commission,
+                                   c.bank_nm,
+                                   a.period,
+                                   a.state
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'
+							 inner join tb_bank c
+                                on a.bank_code = c.bank_code       
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>		                                
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>	                                
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2,
+                                   a.commission as commission2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'         
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>								   
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3,
+                                   a.commission as commission3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'          
+							 )c
+						  on b.high_store_id = c.store_id             
+					)b
+				 on a.terminalid = b.terminalid                
+			)a 
+	</select>
+		
+	<select id="selectMainHistoryFailListCnt" parameterType="searchMainVO" resultMap="main">
+     select count(*) tocnt
+	   from (
+			 select a.no,
+					a.userid,
+					a.amount amountMod,
+					b.amount,
+					a.daoutrx,
+					a.authdate,
+					date_format(b.created_datetime, '%Y.%m.%d') canceldate,
+					a.username,
+					a.authno,
+					a.quota,
+					a.orderno,
+					c.terminal_id,
+					c.tax,
+					c.business_nm,
+					c.business_nm2,
+					c.business_nm3,
+					a.cpid            
+			   from (
+					select a.no, 
+						   a.userid,
+						   FORMAT(a.amount, 0) amount,
+						   a.daoutrx,
+						   date_format(a.authdate, '%Y.%m.%d') authdate,
+						   a.username,
+						   a.authno,
+						   a.quota,
+						   a.orderno,
+						   a.cpid
+					  from tb_card_auth a    
+					 where a.resultcode != '0000'	
+					   and a.resultcode is not null			
+					)a
+			   left join tb_card_cancel b
+				 on a.daoutrx = b.daoutrx
+				and a.cpid = b.cpid
+			  inner join (
+					 select a.store_id,
+							a.terminal_id,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'		
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>									   	 
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>						
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'   	
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>									   	
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'       		            
+							 )c
+						  on b.high_store_id = c.store_id             
+					)c
+				 on a.userid = c.store_id
+			  union all    
+			 select a.no,
+					a.userid,
+					a.amount amountMod,
+					b.amount,
+					a.daoutrx,
+					a.authdate,
+					date_format(b.created_datetime, '%Y.%m.%d') canceldate,
+					a.username,
+					a.authno,
+					a.quota,
+					a.orderno,
+					c.terminal_id,
+					c.tax,
+					c.business_nm,
+					c.business_nm2,
+					c.business_nm3,
+					a.cpid            
+			   from (
+					select a.no, 
+						   a.userid,
+						   FORMAT(a.amount, 0) amount,
+						   a.daoutrx,
+						   date_format(a.authdate, '%Y.%m.%d') authdate,
+						   a.username,
+						   a.authno,
+						   a.quota,
+						   a.orderno,
+						   a.cpid
+					  from tb_card_auth2 a    
+					 where a.resultcode != '0000'		
+					   and a.resultcode is not null		
+					)a
+			   left join tb_card_cancel b
+				 on a.daoutrx = b.daoutrx
+				and a.cpid = b.cpid
+			  inner join (
+					 select a.store_id,
+							a.terminal_id,
+							a.tax,
+							a.business_nm,
+							b.business_nm2,
+							c.business_nm3
+					   from (
+							select a.store_id,
+								   a.terminal_id,
+								   a.tax,
+								   a.high_store_id,
+								   a.business_nm
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1004'		
+						  	    <if test="store_id != null and store_id != ''">
+								and a.store_id = #{store_id}
+								</if>									   	 
+						  	    <if test="high_store_id2 != null and high_store_id2 != ''">
+								and a.high_store_id = #{high_store_id2}
+								</if>				
+							 )a  
+					   inner join      
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm2
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1003'   	
+						  	    <if test="high_store_id != null and high_store_id != ''">
+								and a.high_store_id = #{high_store_id}
+								</if>									   		     
+							 )b
+						  on a.high_store_id = b.store_id
+					   inner join     
+							 (
+							select a.store_id,
+								   a.terminal_id,
+								   a.high_store_id,
+								   a.business_nm as business_nm3
+							  from tb_store a
+							 inner join tb_store_role b
+								on a.store_id = b.store_id
+							   and b.role_id = '1002'       		            
+							 )c
+						  on b.high_store_id = c.store_id             
+					)c
+				 on a.userid = c.store_id      
+			)a        
+	</select>
+			
+	<select id="selectMainNotice01List" parameterType="searchMainVO" resultMap="main">
+     select a.title,
+		    a.created_datetime
+       from (
+   		    select no,
+				   title,
+				   notice_type,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime
+              from tb_notice
+			 where 1 = 1 
+			   and notice_type = 'Y'
+             union all
+   		    select no,
+				   title,
+				   notice_type,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime
+              from tb_notice
+			 where 1 = 1
+			   and notice_type is null
+			)a
+	  order by a.notice_type desc, a.no desc
+      LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>	
+	
+	<select id="selectMainNotice02List" parameterType="searchMainVO" resultMap="main">
+ 	 select a.title,
+		    a.created_datetime
+	   from (
+   		    select no,
+				   title,
+				   notice_type,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime
+              from tb_data
+			 where 1 = 1
+			   and notice_type = 'Y'		 
+             union all    
+   		    select no,
+				   title,
+				   notice_type,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime
+              from tb_data
+			 where 1 = 1
+			   and notice_type is null
+			)a
+	  order by a.notice_type desc, a.no desc
+      LIMIT #{recordCountPerPage} OFFSET #{firstIndex}            
+	</select>	
+	
+	<select id="selectMainNotice03List" parameterType="searchMainVO" resultMap="main">
+   		    select title,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime
+              from tb_faq
+			 where 1 = 1
+			order by no desc	 	
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}	         
+	</select>	
+	
+</mapper>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="egovframework.example.limitchange.service.impl.LimitchangeMapper">
+	<resultMap id="limitchange" type="egovframework.example.limitchange.service.LimitchangeVO">
+		<result property="rownum" column="rownum"/>
+		<result property="no" column="no"/>	
+		<result property="corp_regist_num" column="corp_regist_num"/>
+		<result property="store_id" column="store_id"/>
+		<result property="limit_amt" column="limit_amt"/>
+		<result property="name" column="name"/>
+		<result property="email" column="email"/>
+		<result property="phone_num" column="phone_num"/>
+		<result property="reason" column="reason"/>
+		<result property="state" column="state"/>
+		<result property="reply" column="reply"/>
+		<result property="created_id" column="created_id"/>
+		<result property="created_datetime" column="created_datetime"/>
+		<result property="updated_id" column="updated_id"/>
+		<result property="updated_datetime" column="updated_datetime"/>
+		<result property="searchKeyword" column="searchKeyword"/>
+	</resultMap>
+   
+	<select id="selectLimitchangeList" parameterType="searchLimitchangeVO" resultMap="limitchange">
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   corp_regist_num,
+                   store_id,
+				   limit_amt,
+                   name,
+                   email,
+                   phone_num,
+                   reason,
+                   state,
+                   reply,    
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_limitchange
+			 where (SELECT @ROWNUM:=0)=0 
+				<if test="searchKeyword != null and searchKeyword != ''">
+					<!-- and corp_regist_num = #{searchKeyword} -->
+				</if>
+				<if test="searchType != null and searchType != ''">	
+			        <choose>
+			            <when test="searchType == 'searchType01'">			   
+					   and corp_regist_num like concat('%' , #{searchKeyword} , '%') or store_id like  concat('%' , #{searchKeyword} , '%') or reason like  concat('%' , #{searchKeyword} , '%')
+						</when>			        
+			            <when test="searchType == 'searchType02'">
+					   and corp_regist_num like concat('%' , #{searchKeyword} , '%')
+						</when>
+			            <when test="searchType == 'searchType03'">
+					   and store_id like concat('%' , #{searchKeyword} , '%')
+						</when>
+			            <when test="searchType == 'searchType04'">			   
+					   and reason like concat('%' , #{searchKeyword} , '%')
+						</when>
+
+					</choose>
+				</if>
+			   <!-- and state = 'Y' or state is null -->
+			 order by no desc
+	</select>
+	<select id="selectLimitchangeReply" parameterType="searchLimitchangeVO" resultMap="limitchange">
+   		    select no,
+                   corp_regist_num,
+                   store_id,
+				   limit_amt,
+                   name,
+                   email,
+                   phone_num,
+                   reason,
+                   state,
+                   reply,    
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_limitchange
+			 where no = #{no} 
+	</select>
+	<insert id="limitchangeAdd" parameterType="searchLimitchangeVO" >
+		    insert into tb_limitchange
+				(
+                   corp_regist_num,
+                   store_id,
+		   		   limit_amt,
+                   name,
+                   email,
+                   phone_num,
+                   reason,
+                   state,
+                   reply, 
+                   created_id,
+                   created_datetime
+                )
+                values
+                (
+                 #{corp_regist_num},
+                 #{store_id},
+                 #{limit_amt},
+                 #{name},
+                 #{email},
+                 #{phone_num},
+                 #{reason},                
+                 #{state},                
+                 #{reply},                
+                 #{created_id},                
+                 now()              
+                ) 
+	</insert>	
+	<delete id="limitchangeDel" parameterType="searchLimitchangeVO">
+	   delete from tb_limitchange
+	    where no = #{no}
+	</delete>
+	<update id="limitchangeMod" parameterType="searchLimitchangeVO">
+	   update tb_limitchange
+	      set 
+			  state = 'Y',
+			  reply = #{reply},
+	          updated_id = #{store_id}
+	    where no = #{no}
+	</update>	
+</mapper>
+
+

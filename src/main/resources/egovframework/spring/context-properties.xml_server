@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<bean name="propertiesService" class="egovframework.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
+		<property name="properties">
+	        <map>
+	        	<entry key="pageUnit" value="10"/>
+	        	<entry key="pageSize" value="10"/>
+	        	
+	        	<entry key="Globals.tmp" value="/home/upload/tmp/"/>		       
+                <entry key="Globals.fileStorePath" value="/home/upload"/>
+                <entry key="Globals.fileStorePath2" value="/upload"/>	
+                
+                <entry key="sms.url" value="https://apis.aligo.in/send/"/>		        	
+                <entry key="sms.id" value="gmgpayment"/>		        	
+                <entry key="sms.key" value="uzs1pl5stn500grejmhbgrbtbqtyopqd"/>		        	
+                <entry key="sms.sender" value="16703216"/>		        	
+                <entry key="sms.testmode_yn" value="N"/>
+                <entry key="email.address" value="gmgpay@gmgpayment.co.kr"/>	        
+                
+                <entry key="card.dev" value="27.102.213.207"/>	
+                <entry key="card.cpid" value="CGP52458"/>	        	
+                <entry key="card.port" value="64001"/>		
+                <entry key="card.key" value="gpayment"/>		        
+                <entry key="card.log" value="/home/apache-tomcat-9.0.40/logs/"/>	
+                <entry key="card.url.send" value="https://gmgpayment.co.kr/app/payment/pay.do"/>	 
+                <entry key="card2.cpid" value="2001106695"/>		        	
+                <entry key="card2.api.pay.url" value="https://pay.ksnet.co.kr/kspay/webfep/api/v1/card/pay/noncert"/>		        	
+                <entry key="card2.api.cancel.url" value="https://pay.ksnet.co.kr/kspay/webfep/api/v1/card/cancel"/>	                
+                <entry key="card2.key" value="d6IvblpH5tw+GLIlaMIA1A=="/>		        	
+                <entry key="card2.key2" value="pgapi MjAwMTEwNjY5NTpNQTAxOjg1NjgxMzk0RjE4NzNFNTAxMUJDMEZGNTRCRTBDNEM5"/>
+               	<entry key="card2.url.send" value="https://gmgpayment.co.kr/app/payment2/pay.do"/>	
+               	<entry key="card2.file.server" value="210.181.28.137"/>		        	
+               	<entry key="card2.file.server.port" value="9800"/>	
+               	
+               	<entry key="tax.certkey" value="0F096FE3-A18B-4633-B48C-0856A742BFFC"/>	
+               	<entry key="tax.contactid" value="uwalworks"/>	
+               	<entry key="tax.business.nm" value="주식회사 유월커뮤니케이션"/>	
+               	
+               	<entry key="admin.id" value="gmgMaster"/>	
+               	<entry key="scheduler.on" value="Y"/>
+               	
+	        </map>
+		</property>
+	</bean>
+	
+</beans>	

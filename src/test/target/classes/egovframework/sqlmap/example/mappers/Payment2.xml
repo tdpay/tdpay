@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.payment2.service.impl.Payment2Mapper">
+
+	<resultMap id="payment2" type="egovframework.example.payment2.service.Payment2VO">
+		<result property="no" column="no"/>
+		<result property="paymethod" column="paymethod"/>
+		<result property="cpid" column="cpid"/>
+		<result property="orderno" column="orderno"/>
+		<result property="productname" column="productname"/>
+		<result property="amount" column="amount"/>
+		<result property="userid" column="userid"/>
+		<result property="username" column="username"/>
+		<result property="email" column="email"/>
+		<result property="userphone" column="userphone"/>
+		<result property="producttype" column="producttype"/>
+		<result property="resultcode" column="resultcode"/>
+		<result property="sms_quota" column="sms_quota"/>
+		<result property="cardno" column="cardno"/>
+		<result property="quota" column="quota"/>
+		<result property="message1" column="message1"/>
+	</resultMap>
+
+	<insert id="cardBilling2" parameterType="searchPayment2VO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_card_auth2
+			       (
+					cpid,
+					orderno,
+					productname,
+					amount,
+					userid,
+					username,
+					email,
+					userphone,
+					cardno,
+					quota,
+					daoutrx,
+					authdate,
+					message1,
+					message2,
+					resultcode,
+					authno,
+					isscd,
+					aqucd,
+					producttype,
+					paymenttype
+			       )
+		           values
+		           (
+					#{cpid},
+					#{orderno},
+					#{productname},
+					#{amount},
+					#{userid},
+					#{username},
+					#{email},
+					#{userphone},
+					#{cardno},
+					#{quota},
+					#{daoutrx},
+					#{authdate},
+					#{message1},
+					#{message2},
+					#{resultcode},
+					#{authno},
+					#{isscd},
+					#{aqucd},
+					#{producttype},
+					'1'
+		           )	    	
+	</insert>
+	
+	<insert id="cardBillingLink2" parameterType="searchPayment2VO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_card_auth2
+			       (
+					cpid,
+					orderno,
+					productname,
+					amount,
+					userid,
+					username,
+					email,
+					userphone,
+					producttype,
+					paymenttype,
+					sms_quota
+			       )
+		           values
+		           (
+					#{cpid},
+					#{orderno},
+					#{productname},
+					#{amount},
+					#{userid},
+					#{username},
+					#{email},
+					#{userphone},
+					#{producttype},
+					'2',
+					#{sms_quota}
+		           )	    	
+	</insert>
+	
+	<update id="cardBillingLinkMod2" parameterType="searchPayment2VO">
+	   update tb_card_auth2
+	      set cardno 		= #{cardno}
+	        , quota        	= #{quota}      
+	        , daoutrx       = #{daoutrx}    
+	        , authdate      = #{authdate}   
+	        , message1      = #{message1}   
+	        , message2      = #{message2}   
+	        , resultcode    = #{resultcode} 
+	        , authno        = #{authno}     
+	        , isscd         = #{isscd}      
+	        , aqucd         = #{aqucd}      
+	        , email         = #{email}      
+	    where no = #{no}
+	</update>
+	
+	<select id="selectCardBillingLink2" parameterType="searchPayment2VO" resultMap="payment2">
+	 select	no,
+			cpid,
+			orderno,
+			productname,
+			amount,
+			userid,
+			username,
+			email,
+			userphone,
+			producttype,
+			resultcode,
+			sms_quota,
+			cardno,
+			quota,
+			message1
+	   from tb_card_auth2 
+	  where no = #{no}
+	</select>
+	
+	<insert id="cardCancel2" parameterType="searchPayment2VO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_card_cancel
+			       (
+					cpid,
+					daoutrx,
+					amount,
+					cancelmemo,
+					canceltype,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{cpid},
+					#{daoutrx},
+					#{amount},
+					#{cancelmemo},
+					#{canceltype},
+					#{created_id},
+					now()   
+		           )	    	
+	</insert>	
+			
+</mapper>

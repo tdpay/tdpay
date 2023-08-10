@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.notice.service.impl.NoticeMapper">
+
+	<resultMap id="notice" type="egovframework.example.notice.service.NoticeVO">
+		<result property="store_id" column="store_id"/>
+		<result property="role_id" column="role_id"/>
+		<result property="rownum" column="rownum"/>
+		<result property="no" column="no"/>
+		<result property="notice_type" column="notice_type"/>
+		<result property="cnt" column="cnt"/>
+		<result property="role_check" column="role_check"/>
+		<result property="ceo" column="ceo"/>
+		<result property="title" column="title"/>
+		<result property="tel" column="tel"/>
+		<result property="email" column="email"/>
+		<result property="content" column="content"/>
+		<result property="reply" column="reply"/>
+		<result property="created_id" column="created_id"/>
+		<result property="reply" column="reply"/>
+		<result property="file_num" column="file_num"/>
+		<result property="file_nm" column="file_nm"/>
+		<result property="created_datetime" column="created_datetime"/>
+		<result property="updated_id" column="updated_id"/>
+		<result property="updated_datetime" column="updated_datetime"/>
+	</resultMap>
+	
+	<select id="selectNotice01List2" parameterType="searchNoticeVO" resultMap="notice">
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   notice_type,
+                   cnt,
+				   title,
+                   content,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_notice
+			 where (SELECT @ROWNUM:=0)=0 
+			   and notice_type = 'Y'
+			 order by no desc
+	</select>
+	<select id="selectNotice01List" parameterType="searchNoticeVO" resultMap="notice">
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   notice_type,
+                   cnt,
+				   title,
+                   content,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_notice
+			 where (SELECT @ROWNUM:=0)=0 
+			   and notice_type is null
+			 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'total'">
+			   and (title like concat('%',#{searchKeyword},'%')
+			    or content like concat('%',#{searchKeyword},'%'))
+				</when>
+	            <when test="check == 'title'">
+			   and title like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'content'">			   
+			   and content like concat('%',#{searchKeyword},'%')
+				</when>
+			</choose>
+			 </if>  
+			 order by no desc
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}			 
+	</select>
+	
+	<select id="selectNotice01ListToCnt" parameterType="searchNoticeVO" resultType="int">
+	 select count(*) tocnt   
+	   from tb_notice
+	  where 1 = 1
+	    and notice_type is null
+	 <if test="check != null and check != ''">	
+       <choose>
+           <when test="check == 'total'">
+	   and (title like concat('%',#{searchKeyword},'%')
+	    or content like concat('%',#{searchKeyword},'%'))
+		</when>
+           <when test="check == 'title'">
+	   and title like concat('%',#{searchKeyword},'%')
+		</when>
+           <when test="check == 'content'">			   
+	   and content like concat('%',#{searchKeyword},'%')
+		</when>
+	</choose>
+	 </if>  
+	</select>
+	
+	<select id="selectNotice01ListToCnt2" parameterType="searchNoticeVO" resultType="int">
+select sum(a.tocnt) tocnt
+ from (
+		 select count(*) tocnt
+		   from tb_notice
+		  where notice_type = 'Y'
+		  union all	
+		 select count(*) tocnt   
+		   from tb_notice
+		  where 1 = 1
+	   	    and notice_type is null
+		 <if test="check != null and check != ''">	
+	       <choose>
+	           <when test="check == 'total'">
+		   and (title like concat('%',#{searchKeyword},'%')
+		    or content like concat('%',#{searchKeyword},'%'))
+			</when>
+	           <when test="check == 'title'">
+		   and title like concat('%',#{searchKeyword},'%')
+			</when>
+	           <when test="check == 'content'">			   
+		   and content like concat('%',#{searchKeyword},'%')
+			</when>
+		</choose>
+		 </if>  
+	  )a
+	</select>
+		
+	<select id="selectNotice01Info" parameterType="searchNoticeVO" resultMap="notice">
+   		    select a.no,
+                   a.notice_type,
+                   a.cnt,
+				   a.title,
+                   a.content,
+                   a.created_id,
+                   date_format(a.created_datetime, '%Y-%m-%d %H:%i:%s') created_datetime,
+                   a.updated_id,
+                   a.updated_datetime
+              from tb_notice a 
+			 where a.no = #{no}
+	</select>
+	
+	<select id="selectFileListInfo" parameterType="searchNoticeVO" resultMap="notice">
+   	   	select concat(no) file_num,
+   	   		   file_no,  
+   	   		   file_nm
+ 	   	  from tb_file
+ 	   	 where file_type = #{file_type}
+ 	   	   and file_check = #{file_check}
+ 	   	   and file_no = #{no}
+	</select>
+	
+	<insert id="notice01Add" parameterType="NoticeVO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_notice
+			       (
+					notice_type,
+					title,
+					content,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{notice_type},
+					#{title},
+					#{content},
+					#{created_id},
+					now()   
+		           )	    	
+	</insert>
+		
+	<update id="notice01Mod" parameterType="NoticeVO">
+	   update tb_notice
+	      set
+              notice_type = #{notice_type},
+	          title = #{title},
+	          content = #{content},
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where no = #{no}
+	</update>	
+	
+	<update id="notice01CntMod" parameterType="NoticeVO">
+	   update tb_notice
+	      set 
+	          cnt = ifnull(cnt, 0)+1
+	    where no = #{no}
+	</update>	
+	
+	<delete id="notice01Del" parameterType="NoticeVO" >
+	   delete from tb_notice
+	    where no = #{no}
+	</delete>		
+		
+		
+	<select id="selectNotice02List2" parameterType="searchNoticeVO" resultMap="notice">
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   notice_type,
+                   cnt,
+				   title,
+                   content,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_data
+			 where (SELECT @ROWNUM:=0)=0 
+			   and notice_type = 'Y'	
+			 order by no desc		 
+	</select>
+	
+	<select id="selectNotice02List" parameterType="searchNoticeVO" resultMap="notice">
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   notice_type,
+                   cnt,
+				   title,
+                   content,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_data
+			 where (SELECT @ROWNUM:=0)=0 
+			   and notice_type is null
+			 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'total'">
+			   and (title like concat('%',#{searchKeyword},'%')
+			    or content like concat('%',#{searchKeyword},'%'))
+				</when>
+	            <when test="check == 'title'">
+			   and title like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'content'">			   
+			   and content like concat('%',#{searchKeyword},'%')
+				</when>
+			</choose>
+			 </if>  	
+			 order by no desc		 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}			 
+	</select>
+		
+	<select id="selectNotice02ListToCnt" parameterType="searchNoticeVO" resultType="int">
+	 select count(*) tocnt   
+	   from tb_data
+	  where 1 = 1
+	    and notice_type is null
+	 <if test="check != null and check != ''">	
+        <choose>
+            <when test="check == 'total'">
+		   and (title like concat('%',#{searchKeyword},'%')
+		    or content like concat('%',#{searchKeyword},'%'))
+			</when>
+            <when test="check == 'title'">
+		   and title like concat('%',#{searchKeyword},'%')
+			</when>
+            <when test="check == 'content'">			   
+		   and content like concat('%',#{searchKeyword},'%')
+			</when>
+		</choose>
+	 </if>  	  
+	</select>
+		
+	<select id="selectNotice02ListToCnt2" parameterType="searchNoticeVO" resultType="int">
+select sum(a.tocnt) tocnt
+ from (
+		 select count(*) tocnt
+		   from tb_data
+		  where notice_type = 'Y'
+		  union all		
+	 select count(*) tocnt   
+	   from tb_data
+	  where 1 = 1
+	    and notice_type is null
+	 <if test="check != null and check != ''">	
+        <choose>
+            <when test="check == 'total'">
+		   and (title like concat('%',#{searchKeyword},'%')
+		    or content like concat('%',#{searchKeyword},'%'))
+			</when>
+            <when test="check == 'title'">
+		   and title like concat('%',#{searchKeyword},'%')
+			</when>
+            <when test="check == 'content'">			   
+		   and content like concat('%',#{searchKeyword},'%')
+			</when>
+		</choose>
+	 </if>  	 
+	 )a 
+	</select>
+	
+	<select id="selectNotice02Info" parameterType="searchNoticeVO" resultMap="notice">
+   		    select a.no,
+                   a.notice_type,
+                   a.cnt,
+				   a.title,
+                   a.content,
+                   a.created_id,
+                   date_format(a.created_datetime, '%Y-%m-%d %H:%i:%s') created_datetime,
+                   a.updated_id,
+                   a.updated_datetime
+              from tb_data a
+			 where a.no = #{no}
+	</select>
+		
+	<insert id="notice02Add" parameterType="NoticeVO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_data
+			       (
+			       	notice_type,
+					title,
+					content,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{notice_type},
+					#{title},
+					#{content},
+					#{created_id},
+					now()   
+		           )	    	
+	</insert>
+		
+	<update id="notice02Mod" parameterType="NoticeVO">
+	   update tb_data
+	      set 
+	          notice_type = #{notice_type},
+	          title = #{title},
+	          content = #{content},
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where no = #{no}
+	</update>	
+	
+	<update id="notice02CntMod" parameterType="NoticeVO">
+	   update tb_data
+	      set 
+	          cnt = ifnull(cnt, 0)+1
+	    where no = #{no}
+	</update>	
+	
+	<delete id="notice02Del" parameterType="NoticeVO">
+	   delete from tb_data
+	    where no = #{no}
+	</delete>	
+			
+	<select id="selectNotice03List" parameterType="searchNoticeVO" resultMap="notice">
+   		    select @ROWNUM:=@ROWNUM+1 AS rownum,
+				   no,
+                   cnt,
+				   title,
+                   content,
+                   reply,
+                   created_id,
+                   date_format(created_datetime, '%Y.%m.%d') created_datetime,
+                   updated_id,
+                   updated_datetime
+              from tb_faq
+			 where (SELECT @ROWNUM:=0)=0 
+			 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'total'">
+			   and (title like concat('%',#{searchKeyword},'%')
+			    or content like concat('%',#{searchKeyword},'%'))
+				</when>
+	            <when test="check == 'title'">
+			   and title like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'content'">			   
+			   and content like concat('%',#{searchKeyword},'%')
+				</when>
+			</choose>
+			 </if>  	
+			order by no desc	 	
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}					 
+	</select>
+	
+	<select id="selectNotice03ListToCnt" parameterType="searchNoticeVO" resultType="int">
+	 select count(*) tocnt   
+	   from tb_faq
+	  where 1 = 1
+		 <if test="check != null and check != ''">	
+	       <choose>
+	           <when test="check == 'total'">
+		   and (title like concat('%',#{searchKeyword},'%')
+		    or content like concat('%',#{searchKeyword},'%'))
+	 	 	   </when>
+	           <when test="check == 'title'">
+		   and title like concat('%',#{searchKeyword},'%')
+			   </when>
+	           <when test="check == 'content'">			   
+		   and content like concat('%',#{searchKeyword},'%')
+			   </when>
+			</choose>
+	   </if>  		  
+	</select>
+	
+	<select id="selectNotice03Info" parameterType="searchNoticeVO" resultMap="notice">
+   		    select a.no,
+                   a.cnt,
+				   a.title,
+                   a.content,
+                   a.reply,
+                   a.created_id,
+                   date_format(a.created_datetime, '%Y-%m-%d %H:%i:%s') created_datetime,
+                   a.updated_id,
+                   a.updated_datetime
+              from tb_faq a
+			 where a.no = #{no}
+	</select>
+
+	<insert id="notice03Add" parameterType="NoticeVO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_faq
+			       (
+					title,
+					content,
+					reply,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{title},
+					#{content},
+					#{reply},
+					#{created_id},
+					now()   
+		           )	    	
+	</insert>
+		
+	<update id="notice03Mod" parameterType="NoticeVO">
+	   update tb_faq
+	      set 
+	          title = #{title},
+	          content = #{content},
+	          reply = #{reply},
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where no = #{no}
+	</update>	
+	
+	<update id="notice03CntMod" parameterType="NoticeVO">
+	   update tb_faq
+	      set 
+	          cnt = ifnull(cnt, 0)+1
+	    where no = #{no}
+	</update>	
+	
+	<delete id="notice03Del" parameterType="NoticeVO">
+	   delete from tb_faq
+	    where no = #{no}
+	</delete>	
+			
+	<insert id="fileAddMulti" parameterType="Map">
+	    	
+	insert into tb_file
+		        (
+		        file_no,
+		        file_type,
+		        file_check,
+		        file_nm,
+	            server_file_nm,
+	            size,
+	            path,
+	            server_url
+	            )
+ 	   values 
+	    <foreach item="item" index="index" collection="dbList" separator=",">
+	    (
+			   #{item.file_no},
+			   #{item.file_type},
+			   #{item.file_check},
+			   #{item.file_nm},
+			   #{item.server_file_nm},
+			   #{item.size},
+			   #{item.path},
+			   #{item.server_url}
+		)
+	    </foreach>		            
+	            
+	</insert>	
+				
+	<insert id="fileAdd" parameterType="Map">
+	    	
+	insert into tb_file
+		        (
+		        file_no,
+		        file_type,
+		        file_check,
+		        file_nm,
+	            server_file_nm,
+	            size,
+	            path,
+	            server_url
+	            )
+ 	   values 
+	    <foreach item="item" index="index" collection="dbList" open="(" close=")" separator=",">
+			   #{item.file_no},
+			   #{item.file_type},
+			   #{item.file_check},
+			   #{item.file_nm},
+			   #{item.server_file_nm},
+			   #{item.size},
+			   #{item.path},
+			   #{item.server_url}
+	    </foreach>		            
+	            
+	</insert>			
+
+	<select id="selectFileList" parameterType="Map" resultType="java.util.HashMap">
+        select path 
+	 	  from tb_file 
+		 where no in 
+	    <foreach item="item" index="index" collection="dbList" open="(" close=")" separator=",">
+	        #{item}
+	    </foreach>		   
+	</select>
+	
+	<select id="selectFileList2" parameterType="Map" resultType="java.util.HashMap">
+        select path, no 
+	 	  from tb_file 
+		 where file_no = #{file_no}
+	       and file_type = #{file_type}	   
+	</select>
+		
+	<delete id="fileDel" parameterType="Map">
+		delete 
+		  from tb_file 
+		 where no in 
+	    <foreach item="item" index="index" collection="dbList" open="(" close=")" separator=",">
+	        #{item}
+	    </foreach>			 
+	</delete>	
+			
+	<select id="selectNotice04List" parameterType="searchNoticeVO" resultMap="notice">
+		select @ROWNUM:=@ROWNUM+1 AS rownum,
+			   a.no,
+			   a.store_id,
+	           a.role_id,
+	           a.cnt,
+	           a.title,
+	           a.tel,
+	           a.email,
+			   b.ceo,
+	           date_format(a.created_datetime, '%Y.%m.%d') created_datetime
+	      from tb_inquiry a
+		 inner join tb_store b
+		    on a.store_id = b.store_id
+	     where (SELECT @ROWNUM:=0)=0 
+		   and a.role_id = #{role_id}	
+		   <if test="store_id != null and store_id != ''">	
+		   and a.store_id = #{store_id}
+		   </if>
+			 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'total'">
+			   and (a.title like concat('%',#{searchKeyword},'%')
+			    or a.content like concat('%',#{searchKeyword},'%')
+			    or b.ceo like concat('%',#{searchKeyword},'%')
+			    )
+				</when>
+	            <when test="check == 'title'">
+			   and a.title like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'content'">			   
+			   and a.content like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'ceo'">			   
+			   and b.ceo like concat('%',#{searchKeyword},'%')
+				</when>
+			</choose>
+			 </if>  	
+		 order by no desc	 	
+	 	 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}					 
+	</select>
+	
+	<select id="selectNotice04ListToCnt" parameterType="searchNoticeVO" resultType="int">
+		select count(*) tocnt
+	      from tb_inquiry a
+		 inner join tb_store b
+		    on a.store_id = b.store_id
+	     where (SELECT @ROWNUM:=0)=0 
+		   and a.role_id = #{role_id}	
+		   <if test="store_id != null and store_id != ''">	
+		   and a.store_id = #{store_id}
+		   </if>		   
+			 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'total'">
+			   and (a.title like concat('%',#{searchKeyword},'%')
+			    or a.content like concat('%',#{searchKeyword},'%')
+			    or b.ceo like concat('%',#{searchKeyword},'%')
+			    )
+				</when>
+	            <when test="check == 'title'">
+			   and a.title like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'content'">			   
+			   and a.content like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'ceo'">			   
+			   and b.ceo like concat('%',#{searchKeyword},'%')
+				</when>
+			</choose>
+			 </if>  	
+	</select>	
+
+	<select id="selectNotice04Info" parameterType="searchNoticeVO" resultMap="notice">
+			select a.no,
+				   a.store_id,
+		           a.role_id,
+		           a.cnt,
+		           a.title,
+		           a.tel,
+		           a.email,
+		           a.content,
+		           a.reply,
+				   b.ceo,
+		           date_format(a.created_datetime, '%Y.%m.%d') created_datetime
+		      from tb_inquiry a
+			 inner join tb_store b
+			    on a.store_id = b.store_id
+		     where a.no = #{no}		 
+	</select>
+				
+	<update id="notice04Mod" parameterType="NoticeVO">
+	   update tb_inquiry
+	      set 
+	          reply = #{reply},
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where no = #{no}
+	</update>	
+	<update id="notice04Mod2" parameterType="NoticeVO">
+	   update tb_inquiry
+	      set 
+	          title = #{title},
+	          content = #{content},
+	          tel = #{tel},
+	          email = #{email},
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where no = #{no}
+	</update>	
+	
+	<update id="notice04CntMod" parameterType="NoticeVO">
+	   update tb_inquiry
+	      set 
+	          cnt = ifnull(cnt, 0)+1
+	    where no = #{no}
+	</update>	
+	
+	<delete id="notice04Del" parameterType="NoticeVO">
+	   delete from tb_inquiry
+	    where no = #{no}
+	</delete>	
+	
+	<insert id="notice04Add" parameterType="NoticeVO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_inquiry
+			       (
+					store_id,
+					role_id,
+					title,
+					tel,
+					email,
+					content,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{store_id},
+					#{role_id},
+					#{title},
+					#{tel},
+					#{email},
+					#{content},
+					#{created_id},
+					now()   
+		           )	    	
+	</insert>		
+	
+	<select id="selectNotice07List" parameterType="searchNoticeVO" resultMap="notice">
+		select @ROWNUM:=@ROWNUM+1 AS rownum,
+			   a.no,
+			   a.store_id,
+	           a.role_id,
+	           a.cnt,
+	           a.title,
+	           a.tel,
+	           a.email,
+	           a.role_check,
+			   b.ceo,
+	           date_format(a.created_datetime, '%Y.%m.%d') created_datetime
+	      from tb_pay_cancel_req a
+		 inner join tb_store b
+		    on a.store_id = b.store_id
+	     where (SELECT @ROWNUM:=0)=0 
+	       <if test="role_id != null and role_id != ''">	
+		   and a.role_id = #{role_id}	
+		   </if>
+		   <if test="store_id != null and store_id != ''">	
+		   and a.store_id = #{store_id}
+		   </if>
+			 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'total'">
+			   and (a.title like concat('%',#{searchKeyword},'%')
+			    or a.content like concat('%',#{searchKeyword},'%')
+			    or b.ceo like concat('%',#{searchKeyword},'%')
+			    )
+				</when>
+	            <when test="check == 'title'">
+			   and a.title like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'content'">			   
+			   and a.content like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'ceo'">			   
+			   and b.ceo like concat('%',#{searchKeyword},'%')
+				</when>
+			</choose>
+			 </if>  	
+		 order by no desc	 	
+	 	 LIMIT #{recordCountPerPage} OFFSET #{firstIndex}					 
+	</select>
+	
+	<select id="selectNotice07ListToCnt" parameterType="searchNoticeVO" resultType="int">
+		select count(*) tocnt
+	      from tb_pay_cancel_req a
+		 inner join tb_store b
+		    on a.store_id = b.store_id
+	     where (SELECT @ROWNUM:=0)=0 
+	       <if test="role_id != null and role_id != ''">	
+		   and a.role_id = #{role_id}	
+		   </if>
+		   <if test="store_id != null and store_id != ''">	
+		   and a.store_id = #{store_id}
+		   </if>		   
+			 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'total'">
+			   and (a.title like concat('%',#{searchKeyword},'%')
+			    or a.content like concat('%',#{searchKeyword},'%')
+			    or b.ceo like concat('%',#{searchKeyword},'%')
+			    )
+				</when>
+	            <when test="check == 'title'">
+			   and a.title like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'content'">			   
+			   and a.content like concat('%',#{searchKeyword},'%')
+				</when>
+	            <when test="check == 'ceo'">			   
+			   and b.ceo like concat('%',#{searchKeyword},'%')
+				</when>
+			</choose>
+			 </if>  	
+	</select>	
+
+	<select id="selectNotice07Info" parameterType="searchNoticeVO" resultMap="notice">
+			select a.no,
+				   a.store_id,
+		           a.role_id,
+		           a.cnt,
+		           a.role_check,
+		           a.title,
+		           a.tel,
+		           a.email,
+		           a.content,
+		           a.reply,
+				   date_format(a.authdate, '%Y.%m.%d') authdate,
+				   a.amount,
+				   a.orderno,
+				   a.username,
+				   a.userid,		           
+				   b.ceo,
+		           date_format(a.created_datetime, '%Y.%m.%d') created_datetime
+		      from tb_pay_cancel_req a
+			 inner join tb_store b
+			    on a.store_id = b.store_id
+		     where a.no = #{no}		 
+	</select>
+				
+	<update id="notice07Mod" parameterType="NoticeVO">
+	   update tb_pay_cancel_req
+	      set 
+	          reply = #{reply},
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where no = #{no}
+	</update>	
+	<update id="notice07Mod2" parameterType="NoticeVO">
+	   update tb_pay_cancel_req
+	      set 
+	          title = #{title},
+	          content = #{content},
+	          tel = #{tel},
+	          email = #{email},
+			  authdate = #{authdate},
+			  amount = #{amount},
+			  orderno = #{orderno},
+			  username = #{username},
+			  userid = #{userid},
+	          updated_id = #{updated_id},
+	          updated_datetime = now()
+	    where no = #{no}
+	</update>	
+	
+	<update id="notice07CntMod" parameterType="NoticeVO">
+	   update tb_pay_cancel_req
+	      set 
+	          cnt = ifnull(cnt, 0)+1
+	    where no = #{no}
+	</update>	
+	
+	<update id="notice07RoleCkMod" parameterType="NoticeVO">
+	   update tb_pay_cancel_req
+	      set 
+	          role_check = 'Y'
+	    where no = #{no}
+	</update>	
+	
+	<select id="selectNotice07RoleCnt" resultType="int">
+		select count(*) tocnt
+	      from tb_pay_cancel_req
+	     where role_check = 'N'
+	</select>
+		
+	<delete id="notice07Del" parameterType="NoticeVO">
+	   delete from tb_pay_cancel_req
+	    where no = #{no}
+	</delete>	
+	
+	<insert id="notice07Add" parameterType="NoticeVO" useGeneratedKeys="true" keyProperty="no">
+	   insert into tb_pay_cancel_req
+			       (
+					store_id,
+					role_id,
+					title,
+					tel,
+					email,
+					authdate,
+					amount,
+					orderno,
+					username,
+					userid,					
+					content,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{store_id},
+					#{role_id},
+					#{title},
+					#{tel},
+					#{email},
+					#{authdate},
+					#{amount},
+					#{orderno},
+					#{username},
+					#{userid},					
+					#{content},
+					#{created_id},
+					now()   
+		           )	    	
+	</insert>	
+			
+</mapper>

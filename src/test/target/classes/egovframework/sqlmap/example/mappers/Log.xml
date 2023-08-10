@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.log.service.impl.LogMapper">
+
+	<resultMap id="log" type="egovframework.example.log.service.LogVO">
+		<result property="rownum" column="rownum"/>
+		<result property="no" column="no"/>
+		<result property="login_id" column="login_id"/>
+		<result property="ip" column="ip"/>
+		<result property="url" column="url"/>
+		<result property="action" column="action"/>
+		<result property="login" column="login"/>
+		<result property="created_datetime" column="created_datetime"/>
+		<result property="updated_datetime" column="updated_datetime"/>
+	</resultMap>
+		
+	<select id="selectLogList" parameterType="searchLogVO" resultMap="log">
+	  select a.rownum,	
+			 a.no,
+			 a.login_id,
+			 a.ip,
+			 a.action,
+			 a.url,
+			 a.login,
+			 a.created_datetime,  	 
+			 a.updated_datetime  	 
+	    from ( 
+			 select @ROWNUM:=@ROWNUM+1 AS rownum,
+					a.no,
+					a.login_id,
+					a.ip,
+					a.action,
+					a.url,
+					a.login,
+					a.created_datetime,     
+					a.updated_datetime     
+			   from (
+					select no,
+						   login_id,
+						   ip,
+						   action,
+						   url,
+						   login,
+						   date_format(created_datetime, '%Y.%m.%d %h:%i:%s') created_datetime,
+						   date_format(updated_datetime, '%Y.%m.%d %h:%i:%s') updated_datetime
+					  from tb_log
+					 where 1 = 1
+					 <if test="check != null and check != ''">	
+				        <choose>
+				            <when test="check == 'login_id'">
+						   and login_id like concat('%', #{searchKeyword}, '%') 
+							</when>
+				            <when test="check == 'ip'">
+						   and ip like concat('%', #{searchKeyword}, '%') 
+							</when>
+				            <when test="check == 'url'">			   
+						   and url like concat('%', #{searchKeyword}, '%') 
+							</when>
+				            <when test="check == 'action'">			   
+						   and action like concat('%', #{searchKeyword}, '%') 
+							</when>
+				            <when test="check == 'login'">			   
+						   and login like concat('%', #{searchKeyword}, '%') 
+							</when>
+						</choose>
+					 </if> 			 
+			  	    <if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+					and date(created_datetime) BETWEEN #{start_datetime} AND #{end_datetime}
+					</if>			
+					)a
+		      where (SELECT @ROWNUM:=0)=0     
+			  order by no desc
+			  LIMIT #{recordCountPerPage} OFFSET #{firstIndex}     
+			  )a
+	</select>
+			
+	<select id="selectLogListCnt" parameterType="searchLogVO" resultType="int">
+     select count(*) tocnt
+       from tb_log
+      where 1 = 1
+		 <if test="check != null and check != ''">	
+	        <choose>
+	            <when test="check == 'login_id'">
+			   and login_id like concat('%', #{searchKeyword}, '%') 
+				</when>
+	            <when test="check == 'ip'">
+			   and ip like concat('%', #{searchKeyword}, '%') 
+				</when>
+	            <when test="check == 'url'">			   
+			   and url like concat('%', #{searchKeyword}, '%') 
+				</when>
+	            <when test="check == 'action'">			   
+			   and action like concat('%', #{searchKeyword}, '%') 
+				</when>
+	            <when test="check == 'login'">			   
+			   and login like concat('%', #{searchKeyword}, '%') 
+				</when>				
+			</choose>
+		 </if> 			 
+	    <if test="start_datetime != null and start_datetime != '' and end_datetime != null and end_datetime != ''">
+		and date(created_datetime) BETWEEN #{start_datetime} AND #{end_datetime}
+		</if>     
+	</select>	
+	
+	<delete id="logDel" parameterType="searchLogVO">
+	   delete from tb_log
+	    where 1 = 1
+ 	   <if test="list != null and list != ''">
+          and no in 
+        	<foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+             #{item}
+            </foreach>									
+	   </if>	    
+	</delete>
+		
+	
+</mapper>

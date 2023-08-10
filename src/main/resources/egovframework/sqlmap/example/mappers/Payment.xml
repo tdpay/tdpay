@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.payment.service.impl.PaymentMapper">
+
+	<resultMap id="payment" type="egovframework.example.payment.service.PaymentVO">
+		<result property="cpid" column="cpid"/>
+		<result property="userid" column="userid"/>
+		<result property="orderno" column="orderno"/>
+		<result property="producttype" column="producttype"/>
+		<result property="billtype" column="billtype"/>
+		<result property="taxfreecd" column="taxfreecd"/>
+		<result property="amount" column="amount"/>
+		<result property="userphone" column="userphone"/>
+		<result property="username" column="username"/>
+		<result property="productname" column="productname"/>
+		<result property="resultcode" column="resultcode"/>
+		<result property="sms_quota" column="sms_quota"/>
+	</resultMap>
+	
+	<insert id="cardBilling" parameterType="searchPaymentVO">
+		/** cardBilling */
+	   insert into tb_card_auth
+			       (
+					cpid,
+					orderno,
+					producttype,
+					billtype,
+					taxfreecd,
+					amount,
+					cardno,
+					cardcode,
+					quota,
+					ipaddress,
+					userphone,
+					userid,
+					username,
+					email,
+					productname,
+					resultcode,
+					errormessage,
+					daoutrx,
+					authno,
+					authdate,
+					paymenttype
+			       )
+		           values
+		           (
+					#{cpid},
+					#{orderno},
+					#{producttype},
+					#{billtype},
+					#{taxfreecd},
+					#{amount},
+					#{cardno},
+					#{cardcode},
+					#{quota},
+					#{ipaddress},
+					#{userphone},
+					#{userid},
+					#{username},
+					#{email},
+					#{productname},
+					#{resultcode},
+					#{errormessage},
+					#{daoutrx},
+					#{authno},
+					#{authdate},
+					'1'
+		           )	    	
+	</insert>
+	
+	<insert id="cardBillingLink" parameterType="searchPaymentVO" useGeneratedKeys="true" keyProperty="no">
+		/** cardBillingLink */
+	   insert into tb_card_auth
+			       (
+					cpid,
+					orderno,
+					producttype,
+					billtype,
+					taxfreecd,
+					amount,
+					userphone,
+					userid,
+					username,
+					email,
+					productname,
+					paymenttype,
+					sms_quota
+			       )
+		           values
+		           (
+					#{cpid},
+					#{orderno},
+					#{producttype},
+					#{billtype},
+					#{taxfreecd},
+					#{amount},
+					#{userphone},
+					#{userid},
+					#{username},
+					#{email},
+					#{productname},
+					'2',
+					#{sms_quota}
+		           )	    	
+	</insert>
+	
+	<update id="cardBillingLinkMod" parameterType="searchPaymentVO">
+		/** cardBillingLinkMod */
+	   update tb_card_auth
+	      set cardno 			= #{cardno}
+	        , cardcode			= #{cardcode}
+	        , quota				= #{quota}
+	        , ipaddress			= #{ipaddress}
+	        , resultcode		= #{resultcode}
+	        , errormessage		= #{errormessage}
+	        , daoutrx			= #{daoutrx}
+	        , authno			= #{authno}
+	        , authdate			= #{authdate}
+	        , email				= #{email}
+	    where no = #{no}
+	</update>
+	
+	<select id="selectCardBillingLink" parameterType="searchPaymentVO" resultMap="payment">
+	/** selectCardBillingLink */
+	 select	no,
+	 		cpid,
+			orderno,
+			producttype,
+			billtype,
+			taxfreecd,
+			amount,
+			userphone,
+			username,
+			email,
+			productname,
+			resultcode,
+			sms_quota,
+			userid
+	   from tb_card_auth 
+	  where no = #{no}
+	</select>
+	
+	<insert id="cardCancel" parameterType="searchPaymentVO" useGeneratedKeys="true" keyProperty="no">
+	/** cardCancel */
+	   insert into tb_card_cancel
+			       (
+					cpid,
+					daoutrx,
+					amount,
+					cancelmemo,
+					canceltype,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{cpid},
+					#{daoutrx},
+					#{amount},
+					#{cancelmemo},
+					#{canceltype},
+					#{created_id},
+					now()   
+		           )	    	
+	</insert>
+	
+	<insert id="cardTerminal" parameterType="searchPaymentVO" >
+		/** cardTerminal */
+	   insert into tb_pay_notice
+			       (
+					cpid,
+					daoutrx,
+					settdate,
+					authno,
+					amount,
+					tip,
+					tax,
+					terminalid,
+					agentno,
+					cardtype,
+					allotmon,
+					cardcode,
+					cardname,
+					buycode,
+					cardno,
+					paymenttype
+			       )
+		     values( 
+					#{cpid},
+					#{daoutrx},
+					#{settdate},
+					#{authno},
+					#{amount},
+					#{tip},
+					#{tax},
+					#{terminalid},
+					#{agentno},
+					#{cardtype},
+					#{allotmon},
+					#{cardcode},			       
+		       		(select cardname from tb_card_code where cardcode = #{cardcode}),
+					#{buycode},
+					#{cardno},
+					#{paymenttype}
+		      )
+	</insert>
+	
+	<insert id="shopCard" parameterType="searchPaymentVO" >
+		/** shopCard */
+	   insert into tb_pay_notice
+			       (
+					cpid,
+					daoutrx,
+					settdate,
+					authno,
+					amount,
+					cardcode,
+					cardname,
+					cardno,
+					paymenttype
+			       )
+		     values( 
+					#{cpid},
+					#{daoutrx},
+					#{settdate},
+					#{authno},
+					#{amount},
+					#{cardcode},			       
+		       		(select cardname from tb_card_code where cardcode = #{cardcode}),
+					#{cardno},
+					#{paymenttype}       		   
+		      )
+	</insert>
+		
+	<insert id="cardTerminalCancel" parameterType="searchPaymentVO" >
+		/** cardTerminalCancel */
+	   insert into tb_card_cancel
+			       (
+					cpid,
+					daoutrx,
+					amount,
+					cancelmemo,
+					canceltype,
+					created_id,
+					created_datetime
+			       )
+		           values
+		           (
+					#{cpid},
+					#{daoutrx},
+					#{amount},
+					#{cancelmemo},
+					#{canceltype},
+					#{created_id},
+					#{canceldate}
+		           )	    	
+	</insert>
+			
+</mapper>
