@@ -9,7 +9,7 @@ $(function() {
     	submitHandler : function(form){
     		
     		var gp_arr_key;
-    		var i = 0 ; 
+    		var i = 0 ;  
     		
     	    $("input[name=menu_id]").each(function(){
     	    	if($(this).is(":checked")){
