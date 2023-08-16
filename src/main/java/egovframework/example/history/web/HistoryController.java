@@ -170,7 +170,7 @@ public class HistoryController {
 			
 			historyVO.setD_amount(selectHistoryDetailList.get(0).getD_amount());
 			historyVO.setD_cancel_sum(selectHistoryDetailList.get(0).getD_cancel_sum());
-			cnt = selectHistoryDetailList.get(0).getD_total_cnt();
+			cnt = selectHistoryDetailList.get(0).getD_total_cnt(); 
 			historyVO.setD_approval_cnt(selectHistoryDetailList.get(0).getD_approval_cnt());
 			historyVO.setD_cancel_cnt(selectHistoryDetailList.get(0).getD_cancel_cnt());
 		}
